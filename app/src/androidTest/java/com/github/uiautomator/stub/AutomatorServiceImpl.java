@@ -23,7 +23,9 @@
 
 package com.github.uiautomator.stub;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.UiAutomation;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
@@ -39,6 +41,8 @@ import android.support.test.uiautomator.Until;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.github.uiautomator.stub.watcher.ClickUiObjectWatcher;
 import com.github.uiautomator.stub.watcher.PressKeysWatcher;
@@ -47,12 +51,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class AutomatorServiceImpl implements AutomatorService {
@@ -66,7 +77,99 @@ public class AutomatorServiceImpl implements AutomatorService {
     public AutomatorServiceImpl() {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         this.uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        AccessibilityServiceInfo serviceInfo = this.uiAutomation.getServiceInfo();
+        if(serviceInfo == null) {
+            Log.d("service info is null");
+            serviceInfo = new AccessibilityServiceInfo();
+            serviceInfo.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+            serviceInfo.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
+            serviceInfo.packageNames = new String[]{"com.android.packageinstaller"};
+            serviceInfo.notificationTimeout=100;
+        } else {
+            Log.d("service info is not null");
+            serviceInfo.eventTypes = serviceInfo.eventTypes | AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+            if(serviceInfo.packageNames == null || serviceInfo.packageNames.length == 0){
+                serviceInfo.packageNames = new String[]{"com.android.packageinstaller"};
+            } else {
+                List<String> names = Arrays.asList(serviceInfo.packageNames);
+                names.add("com.android.packageinstaller");
+                String[] packageNames = new String[names.size()];
+                serviceInfo.packageNames = names.toArray(packageNames);
+            }
+        }
+        this.uiAutomation.setServiceInfo(serviceInfo);
+        this.uiAutomation.setOnAccessibilityEventListener(event -> {
+            if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
+                Log.d("window state change: " + event.getPackageName());
+                if(event.getPackageName() != null &&
+                        event.getPackageName().toString().equalsIgnoreCase("com.android.packageinstaller")) {
+                    Observable.timer(3, TimeUnit.SECONDS)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .map(s -> sendInstallPassword("com.coloros.safecenter:id/et_login_passwd_edit", ""))
+                            .delay(1, TimeUnit.SECONDS)
+                            .map(s -> clickInstallButton("android:id/button1"))
+                            .delay(5, TimeUnit.SECONDS)
+                            .map(s -> clickInstallButton("com.android.packageinstaller:id/btn_allow_once"))
+                            .delay(3, TimeUnit.SECONDS)
+                            .map(s -> clickInstallButton("com.android.packageinstaller:id/ok_button"))
+                            .delay(3, TimeUnit.SECONDS)
+                            .map(s -> clickInstallButton("com.android.packageinstaller:id/bottom_button_one"))
+                            .subscribe(System.out::println);
+                }
+            }
+        });
+
     }
+
+    private boolean sendInstallPassword(String id,String text){
+        Log.d("send install password");
+        AccessibilityNodeInfo info = this.uiAutomation.getRootInActiveWindow();
+        if(info == null) return false;
+        List<AccessibilityNodeInfo> infos = info.findAccessibilityNodeInfosByViewId(id);
+        if(infos == null || infos.size() == 0) {
+            Log.e("fail to find node " + id);
+            return false;
+        }
+        AccessibilityNodeInfo node = infos.get(0);
+        if(node == null) {
+            Log.e("fail to find node " + id);
+            return false;
+        }
+        if (text == null) {
+            text = "";
+        }
+        Bundle args = new Bundle();
+        args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
+        if (!node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args)) {
+            // TODO: Decide if we should throw here
+            Log.e("AccessibilityNodeInfo#performAction(ACTION_SET_TEXT) failed");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean clickInstallButton(String id){
+        Log.d("click install button: " + id);
+        AccessibilityNodeInfo info = this.uiAutomation.getRootInActiveWindow();
+        if(info == null) return false;
+        List<AccessibilityNodeInfo> infos = info.findAccessibilityNodeInfosByViewId(id);
+        if(infos == null || infos.size() == 0) {
+            Log.e("fail to find node " + id);
+            return false;
+        }
+        AccessibilityNodeInfo node = infos.get(0);
+        if(node == null){
+            Log.e("fail to find node " + id);
+            return false;
+        }
+        if(!node.performAction(AccessibilityNodeInfo.ACTION_CLICK)){
+            Log.e("AccessibilityNodeInfo#performAction(ACTION_CLICK) failed");
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * It's to test if the service is alive.
