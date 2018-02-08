@@ -25,6 +25,8 @@ package com.github.uiautomator.stub;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.UiAutomation;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.SystemClock;
@@ -38,6 +40,7 @@ import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiScrollable;
 import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
+import android.text.TextUtils;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -46,11 +49,14 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.github.uiautomator.stub.watcher.ClickUiObjectWatcher;
 import com.github.uiautomator.stub.watcher.PressKeysWatcher;
+import com.google.gson.Gson;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -73,101 +79,138 @@ public class AutomatorServiceImpl implements AutomatorService {
 
     private UiDevice device;
     private UiAutomation uiAutomation;
+    private Device autoDevice = null;
 
     public AutomatorServiceImpl() {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         this.uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        initAutoInstall();
+    }
+
+    private void initAutoInstall(){
         AccessibilityServiceInfo serviceInfo = this.uiAutomation.getServiceInfo();
-        if(serviceInfo == null) {
-            Log.d("service info is null");
-            serviceInfo = new AccessibilityServiceInfo();
-            serviceInfo.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-            serviceInfo.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
+
+        serviceInfo.eventTypes = serviceInfo.eventTypes | AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+        if(serviceInfo.packageNames == null || serviceInfo.packageNames.length == 0){
             serviceInfo.packageNames = new String[]{"com.android.packageinstaller"};
-            serviceInfo.notificationTimeout=100;
         } else {
-            Log.d("service info is not null");
-            serviceInfo.eventTypes = serviceInfo.eventTypes | AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-            if(serviceInfo.packageNames == null || serviceInfo.packageNames.length == 0){
-                serviceInfo.packageNames = new String[]{"com.android.packageinstaller"};
-            } else {
-                List<String> names = Arrays.asList(serviceInfo.packageNames);
-                names.add("com.android.packageinstaller");
-                String[] packageNames = new String[names.size()];
-                serviceInfo.packageNames = names.toArray(packageNames);
-            }
+            List<String> names = Arrays.asList(serviceInfo.packageNames);
+            names.add("com.android.packageinstaller");
+            String[] packageNames = new String[names.size()];
+            serviceInfo.packageNames = names.toArray(packageNames);
         }
         this.uiAutomation.setServiceInfo(serviceInfo);
+
+        StringBuffer sb = new StringBuffer();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(InstrumentationRegistry.getTargetContext().getAssets().open("auto_install.json")));
+            String line = reader.readLine();
+            while(line != null){
+                sb.append(line);
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Device[] devices = new Gson().fromJson(sb.toString(), Device[].class);
+        for(Device device : devices){
+            if(Build.BRAND.equalsIgnoreCase(device.getName())){
+                this.autoDevice = device;
+                break;
+            }
+        }
+        if(this.autoDevice == null){
+            Log.e("fail to check current device. Build: " + Build.BRAND);
+        }
+
         this.uiAutomation.setOnAccessibilityEventListener(event -> {
             if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
                 Log.d("window state change: " + event.getPackageName());
                 if(event.getPackageName() != null &&
                         event.getPackageName().toString().equalsIgnoreCase("com.android.packageinstaller")) {
-                    Observable.timer(3, TimeUnit.SECONDS)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .map(s -> sendInstallPassword("com.coloros.safecenter:id/et_login_passwd_edit", ""))
-                            .delay(1, TimeUnit.SECONDS)
-                            .map(s -> clickInstallButton("android:id/button1"))
-                            .delay(5, TimeUnit.SECONDS)
-                            .map(s -> clickInstallButton("com.android.packageinstaller:id/btn_allow_once"))
-                            .delay(3, TimeUnit.SECONDS)
-                            .map(s -> clickInstallButton("com.android.packageinstaller:id/ok_button"))
-                            .delay(3, TimeUnit.SECONDS)
-                            .map(s -> clickInstallButton("com.android.packageinstaller:id/bottom_button_one"))
-                            .subscribe(System.out::println);
+                    if(this.autoDevice != null){
+                        Observable<Long> observable = Observable.timer(3, TimeUnit.SECONDS).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+                        for(Device.Operation operation : this.autoDevice.getOperations()){
+                            switch (operation.getType()){
+                                case "input":
+                                    if(!TextUtils.isEmpty(operation.getId())) {
+                                        observable = observable.map(s -> autoInput(operation.getId(), operation.getValue()));
+                                    } else {
+                                        observable = observable.map(s -> autoInput(operation.getText(), operation.getValue()));
+                                    }
+                                    if(operation.getDelay() != null && operation.getDelay() != 0){
+                                        observable = observable.delay(operation.getDelay(), TimeUnit.SECONDS);
+                                    }
+                                    break;
+                                case "click":
+                                    if(!TextUtils.isEmpty(operation.getId())) {
+                                        observable = observable.map(s -> autoClick(operation.getId()));
+                                    } else {
+                                        observable = observable.map(s -> autoClick(operation.getText()));
+                                    }
+                                    if(operation.getDelay() != null && operation.getDelay() != 0){
+                                        observable = observable.delay(operation.getDelay(), TimeUnit.SECONDS);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        observable.subscribe(System.out::print, e -> System.out.print(e.getMessage()));
+                    }
                 }
             }
         });
 
     }
 
-    private boolean sendInstallPassword(String id,String text){
-        Log.d("send install password");
+    private Long autoInput(String by, String input){
+        Log.d("input text " + input + " by " + by);
         AccessibilityNodeInfo info = this.uiAutomation.getRootInActiveWindow();
-        if(info == null) return false;
-        List<AccessibilityNodeInfo> infos = info.findAccessibilityNodeInfosByViewId(id);
+        if(info == null) return 0L;
+        List<AccessibilityNodeInfo> infos = info.findAccessibilityNodeInfosByViewId(by);
         if(infos == null || infos.size() == 0) {
-            Log.e("fail to find node " + id);
-            return false;
+            Log.e("fail to find node by id " + by + ", try by text");
+            infos = info.findAccessibilityNodeInfosByText(by);
+            if(infos == null || infos.size() == 0) {
+                Log.e("fail to find node by text " + by + ", return");
+                return 1L;
+            }
         }
         AccessibilityNodeInfo node = infos.get(0);
-        if(node == null) {
-            Log.e("fail to find node " + id);
-            return false;
-        }
-        if (text == null) {
-            text = "";
+        if (input == null) {
+            input = "";
         }
         Bundle args = new Bundle();
-        args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
+        args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, input);
         if (!node.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args)) {
             // TODO: Decide if we should throw here
             Log.e("AccessibilityNodeInfo#performAction(ACTION_SET_TEXT) failed");
-            return false;
+            return 0L;
         }
-        return true;
+        return 1L;
     }
 
-    private boolean clickInstallButton(String id){
-        Log.d("click install button: " + id);
+    private Long autoClick(String by){
+        Log.d("click button " + by);
         AccessibilityNodeInfo info = this.uiAutomation.getRootInActiveWindow();
-        if(info == null) return false;
-        List<AccessibilityNodeInfo> infos = info.findAccessibilityNodeInfosByViewId(id);
+        if(info == null) return 0L;
+        List<AccessibilityNodeInfo> infos = info.findAccessibilityNodeInfosByViewId(by);
         if(infos == null || infos.size() == 0) {
-            Log.e("fail to find node " + id);
-            return false;
+            Log.e("fail to find node by id " + by + ", try by text");
+            infos = info.findAccessibilityNodeInfosByText(by);
+            if(infos == null || infos.size() == 0) {
+                Log.e("fail to find node by text " + by + ", return");
+                return 1L;
+            }
         }
         AccessibilityNodeInfo node = infos.get(0);
-        if(node == null){
-            Log.e("fail to find node " + id);
-            return false;
-        }
         if(!node.performAction(AccessibilityNodeInfo.ACTION_CLICK)){
             Log.e("AccessibilityNodeInfo#performAction(ACTION_CLICK) failed");
-            return false;
+            return 0L;
         }
-        return true;
+        return 1L;
     }
 
 

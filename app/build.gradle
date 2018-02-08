@@ -34,8 +34,8 @@ plugins {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 27
+    buildToolsVersion '26.0.3'
 
     // version code history
     // 1: original version
@@ -44,12 +44,9 @@ android {
     defaultConfig {
         applicationId "com.github.uiautomator"
         minSdkVersion 18
-        targetSdkVersion 22
+        targetSdkVersion 27
         versionCode androidGitVersion.code()
         versionName androidGitVersion.name()
-        jackOptions {
-            enabled true
-        }
     }
 
     signingConfigs {
@@ -88,6 +85,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // server
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.google.code.gson:gson:2.8.2'
     compile 'org.nanohttpd:nanohttpd:2.3.1'
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
