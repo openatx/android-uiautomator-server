@@ -46,6 +46,14 @@ d(scrollable=True).scroll.vert.forward()
 
 Refer to python wrapper library [uiautomator](https://github.com/xiaocong/uiautomator).
 
+# How to generate changelog
+[conventional-changelog](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-cli)
+
+```bash
+npm install -g conventional-changelog-cli
+conventional-changelog -p grunt -i CHANGELOG.md -s -r 0
+```
+
 # Notes
 
 If you have any idea, please email xiaocong@gmail.com or [submit tickets](https://github.com/xiaocong/uiautomator/issues/new).
@@ -58,5 +66,5 @@ If you have any idea, please email xiaocong@gmail.com or [submit tickets](https:
 
 # TODO
 
-- move from java to kotlin
-- support unicode input
+- ~~move from java to kotlin~~
+- [x] support unicode input

@@ -58,6 +58,7 @@ public class Stub {
 
     @Before
     public void setUp() throws Exception {
+        launchService();
         server.route("/jsonrpc/0", new JsonRpcServer(new ObjectMapper(), new AutomatorServiceImpl(), AutomatorService.class));
         server.start();
     }
@@ -68,22 +69,24 @@ public class Stub {
 
         // Wait for launcher
         String launcherPackage = device.getLauncherPackageName();
-        device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
-
+        Boolean ready = device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
+        if (!ready) {
+            Log.i(TAG, "Wait for launcher timeout");
+            return;
+        }
         // Launch the app
         Context context = InstrumentationRegistry.getContext();
-        final String packageName = "com.github.uiautomator";
-
 
 //        Useless: Check if service is running
+//        final String packageName = "com.github.uiautomator";
 //        if (Helper.isAppRunning(context, packageName)) {
 //            Log.i(TAG, "Service is running");
 //            System.out.println("UiAutomator service is running");
 //            return;
 //        }
 
-//        Log.i(TAG, "Launch service");
-//        context.startService(new Intent("com.github.uiautomator.ACTION_START"));
+        Log.i(TAG, "Launch service");
+        context.startService(new Intent("com.github.uiautomator.ACTION_START"));
 
 //        Log.i(TAG, "Launch " + packageName);
 //        final Intent intent = context.getPackageManager()
@@ -100,7 +103,7 @@ public class Stub {
     public void tearDown() {
         server.stop();
         Context context = InstrumentationRegistry.getContext();
-        context.startService(new Intent("com.github.uiautomator.ACTION_START"));
+        context.startService(new Intent("com.github.uiautomator.ACTION_STOP"));
     }
 
     @Test
