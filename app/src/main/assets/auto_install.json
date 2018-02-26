@@ -1,0 +1,45 @@
+[
+  {
+    "name": "oppo",
+    "operations": [
+      {
+        "type": "input",
+        "id": "com.coloros.safecenter:id/et_login_passwd_edit",
+        "delay": 1,
+        "text": "",
+        "value": "Netease163"
+      },
+      {
+        "type": "click",
+        "id": "android:id/button1",
+        "delay": 5,
+        "text": "",
+        "value": ""
+      },
+      {
+        "type": "click",
+        "id": "com.android.packageinstaller:id/btn_allow_once",
+        "delay": 3,
+        "text": "",
+        "value": ""
+      },
+      {
+        "type": "click",
+        "id": "com.android.packageinstaller:id/ok_button",
+        "delay": 3,
+        "text": "",
+        "value": ""
+      },
+      {
+        "type": "click",
+        "id": "com.android.packageinstaller:id/bottom_button_one",
+        "text": "",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "name": "lenovo",
+    "operations": []
+  }
+]
