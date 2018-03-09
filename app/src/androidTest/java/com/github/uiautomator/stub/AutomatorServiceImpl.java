@@ -62,6 +62,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -1676,6 +1677,7 @@ public class AutomatorServiceImpl implements AutomatorService {
     @Override
     public boolean makeToast(String text, int duration) {
         // make text should be run on UI thread.
+        this.lastToast = text;
         Log.d("show toast text 7 " + text);
         Intent intent = new Intent("com.github.uiautomator.ACTION_TOAST");
         intent.setPackage("com.github.uiautomator");

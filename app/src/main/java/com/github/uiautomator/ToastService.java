@@ -38,6 +38,7 @@ public class ToastService {
                 | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
         params.verticalMargin = 0.2f;
+        params.alpha = 0.6f;
         params.y = -30;
     }
 
