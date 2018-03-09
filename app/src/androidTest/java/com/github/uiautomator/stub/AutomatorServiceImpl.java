@@ -24,10 +24,14 @@
 package com.github.uiautomator.stub;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.app.ActivityManager;
 import android.app.UiAutomation;
-import android.content.res.Resources;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
@@ -46,7 +50,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Toast;
 
+import com.github.uiautomator.Service;
 import com.github.uiautomator.stub.watcher.ClickUiObjectWatcher;
 import com.github.uiautomator.stub.watcher.PressKeysWatcher;
 import com.google.gson.Gson;
@@ -68,6 +74,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -80,10 +87,13 @@ public class AutomatorServiceImpl implements AutomatorService {
     private UiDevice device;
     private UiAutomation uiAutomation;
     private Device autoDevice = null;
+    private String lastToast = "";
+    private Context context;
 
     public AutomatorServiceImpl() {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         this.uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        this.context = InstrumentationRegistry.getTargetContext();
         initAutoInstall();
     }
 
@@ -103,7 +113,7 @@ public class AutomatorServiceImpl implements AutomatorService {
 
         StringBuffer sb = new StringBuffer();
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(InstrumentationRegistry.getTargetContext().getAssets().open("auto_install.json")));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(this.context.getAssets().open("auto_install.json")));
             String line = reader.readLine();
             while(line != null){
                 sb.append(line);
@@ -1642,5 +1652,28 @@ public class AutomatorServiceImpl implements AutomatorService {
     public ConfiguratorInfo setConfigurator(ConfiguratorInfo info) throws NotImplementedException {
         ConfiguratorInfo.setConfigurator(info);
         return new ConfiguratorInfo();
+    }
+
+    @Override
+    public boolean makeToast(String text, int duration) {
+        // make text should be run on UI thread.
+        Log.d("show toast text 7 " + text);
+        Intent intent = new Intent("com.github.uiautomator.ACTION_TOAST");
+        intent.setPackage("com.github.uiautomator");
+        intent.putExtra("text", text);
+        intent.putExtra("duration", duration);
+        InstrumentationRegistry.getContext().startService(intent);
+        return true;
+    }
+
+    @Override
+    public String getLastToast() {
+        return this.lastToast;
+    }
+
+    @Override
+    public boolean clearLastToast() {
+        this.lastToast = "";
+        return true;
     }
 }
