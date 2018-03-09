@@ -979,4 +979,24 @@ public interface AutomatorService {
      */
     @JsonRpcErrors({@JsonRpcError(exception = NotImplementedException.class, code = ERROR_CODE_BASE - 3)})
     ConfiguratorInfo setConfigurator(ConfiguratorInfo info) throws NotImplementedException;
+
+    /***
+     *  show toast text in seconds
+     * @param text the text to show
+     * @param duration text duration
+     * @return true if text is shown, false otherwise
+     */
+    boolean makeToast(String text, int duration);
+
+    /***
+     *  get last toast text
+     * @return the latest toast text or empty String
+     */
+    String getLastToast();
+
+    /***
+     *  clear the last toast text and set
+     * @return true if we clear the last toast text, false otherwise
+     */
+    boolean clearLastToast();
 }

@@ -5,9 +5,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.github.uiautomator.monitor.AbstractMonitor;
 import com.github.uiautomator.monitor.BatteryMonitor;
@@ -21,6 +24,7 @@ import java.util.List;
 public class Service extends android.app.Service {
     public static final String ACTION_START = "com.github.uiautomator.ACTION_START";
     public static final String ACTION_STOP = "com.github.uiautomator.ACTION_STOP";
+    private static final String ACTION_TOAST = "com.github.uiautomator.ACTION_TOAST";
 
     private static final String TAG = "UIAService";
     private static final int NOTIFICATION_ID = 0x1;
@@ -77,9 +81,12 @@ public class Service extends android.app.Service {
 
         if (ACTION_START.equals(action)) {
             Log.i(TAG, "Receive start-service action, but ignore it");
-
         } else if (ACTION_STOP.equals(action)) {
             stopSelf();
+        } else if (ACTION_TOAST.equalsIgnoreCase(action)){
+            String text = intent.getStringExtra("text");
+            int duration = intent.getIntExtra("duration", 2);
+            ToastService.makeText(getApplicationContext(), text, duration).show();
         } else {
             Log.e(TAG, "Unknown action " + action);
         }
