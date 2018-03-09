@@ -53,6 +53,7 @@ public class Stub {
     private final String TAG = "UIAUTOMATOR";
     private static final int LAUNCH_TIMEOUT = 5000;
 
+
     int PORT = 9008;
     AutomatorHttpServer server = new AutomatorHttpServer(PORT);
 
@@ -63,8 +64,22 @@ public class Stub {
         server.start();
     }
 
+    private void launchPackage(String packageName) {
+        Log.i(TAG, "Launch " + packageName);
+        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        Context context = InstrumentationRegistry.getContext();
+        final Intent intent = context.getPackageManager()
+                .getLaunchIntentForPackage(packageName);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+
+        device.wait(Until.hasObject(By.pkg(packageName).depth(0)), LAUNCH_TIMEOUT);
+        device.pressHome();
+    }
+
     private void launchService() throws RemoteException {
         UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        Context context = InstrumentationRegistry.getContext();
         device.wakeUp();
 
         // Wait for launcher
@@ -74,29 +89,9 @@ public class Stub {
             Log.i(TAG, "Wait for launcher timeout");
             return;
         }
-        // Launch the app
-        Context context = InstrumentationRegistry.getContext();
 
-//        Useless: Check if service is running
-//        final String packageName = "com.github.uiautomator";
-//        if (Helper.isAppRunning(context, packageName)) {
-//            Log.i(TAG, "Service is running");
-//            System.out.println("UiAutomator service is running");
-//            return;
-//        }
-
-        Log.i(TAG, "Launch service");
+        Log.d("Launch service");
         context.startService(new Intent("com.github.uiautomator.ACTION_START"));
-
-//        Log.i(TAG, "Launch " + packageName);
-//        final Intent intent = context.getPackageManager()
-//                .getLaunchIntentForPackage(packageName);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        context.startActivity(intent);
-//
-//        device.wait(Until.hasObject(By.pkg(packageName).depth(0)),
-//                LAUNCH_TIMEOUT);
-//        device.pressHome();
     }
 
     @After
