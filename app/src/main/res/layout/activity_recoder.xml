@@ -1,0 +1,153 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:screenOrientation="landscape"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingEnd="@dimen/activity_horizontal_margin"
+    android:paddingStart="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/media_format_chooser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="?android:attr/titleTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/video_encode_config_h_264_avc" />
+
+            <com.github.uiautomator.view.NamedSpinner
+                android:id="@+id/video_codec"
+                app:name="Video Encoder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <com.github.uiautomator.view.NamedSpinner
+                android:id="@+id/resolution"
+                app:name="Resolution"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:entries="@array/video_resolutions" />
+
+            <com.github.uiautomator.view.NamedSpinner
+                android:id="@+id/video_bitrate"
+                app:name="Bitrate (kbps)"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:entries="@array/video_bitrates" />
+
+            <com.github.uiautomator.view.NamedSpinner
+                android:id="@+id/framerate"
+                app:name="Frame Rate (fps)"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="8dp"
+                app:entries="@array/video_framerates" />
+
+            <com.github.uiautomator.view.NamedSpinner
+                android:id="@+id/iframe_interval"
+                app:name="I-Frame Interval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="8dp"
+                app:entries="@array/iframeintervals" />
+
+            <com.github.uiautomator.view.NamedSpinner
+                android:id="@+id/avc_profile"
+                app:name="AVCProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+            <com.github.uiautomator.view.NamedSpinner
+                android:id="@+id/orientation"
+                app:name="Orientation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:entries="@array/orientations" />
+
+            <LinearLayout
+                android:id="@+id/audio_format_chooser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="?android:attr/titleTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/audio_encode_config_h_264_aac" />
+
+                <com.github.uiautomator.view.NamedSpinner
+                    android:id="@+id/audio_codec"
+                    app:name="Audio Encoder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" />
+
+                <com.github.uiautomator.view.NamedSpinner
+                    android:id="@+id/audio_channel_count"
+                    app:name="Channels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:entries="@array/audio_channels" />
+
+                <com.github.uiautomator.view.NamedSpinner
+                    android:id="@+id/sample_rate"
+                    app:name="Sample Rate (HZ)"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" />
+
+                <com.github.uiautomator.view.NamedSpinner
+                    android:id="@+id/audio_bitrate"
+                    app:name="Bitrate (kbps)"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" />
+
+                <com.github.uiautomator.view.NamedSpinner
+                    android:id="@+id/aac_profile"
+                    app:name="AAC Profile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <ToggleButton
+        android:id="@+id/with_audio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/record_button"
+        android:layout_alignParentEnd="true"
+        android:checked="true"
+        android:textOff="@string/without_audio"
+        android:textOn="@string/with_audio" />
+
+    <Button
+        android:id="@+id/record_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="@string/start_recorder" />
+</RelativeLayout>

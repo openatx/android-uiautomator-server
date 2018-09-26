@@ -22,7 +22,7 @@
   -->
 
 <resources>
-    <string name="app_name">uiautomator</string>
+    <string name="app_name">ATX</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -30,4 +30,22 @@
     <string name="service_title">UiAutomator</string>
     <string name="service_text">service is running</string>
     <string name="fast_input_label">FastInputIME</string>
+    <string name="video_encode_config_h_264_avc">Video Encode Config (H.264 AVC)</string>
+    <string name="audio_encode_config_h_264_aac">Audio Encode Config (H.264 AAC)</string>
+    <string name="without_audio">Without Audio</string>
+    <string name="with_audio">With Audio</string>
+    <string name="start_recorder">Start Recorder</string>
+    <string name="stop_atxagent">停止ATXAGENT</string>
+    <string name="coor_switch">开启坐标定位</string>
+    <string name="screen_record">开始录屏</string>
+    <string name="stop_record">结束录屏</string>
+    <string name="stop_uiautomator">停止UIAutomator</string>
+    <string name="barrier_free">无障碍</string>
+    <string name="develop_mode">开发者选项</string>
+    <string name="shot_cut">快捷方式</string>
+    <string name="identify">Identify</string>
+    <string name="quit">Quit</string>
+    <string name="stop_coor_location">关闭坐标定位</string>
+    <string name="no_permission_tip">No permission to write sd card</string>
+    <string name="record_setting">录屏配置</string>
 </resources>

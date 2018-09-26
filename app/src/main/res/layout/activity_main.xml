@@ -1,66 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.github.uiautomator.MainActivity">
-
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="1dp"
-        android:text="ATX-Agent" />
-
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/btn_finish"
-        android:text="Quit" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_atx_title"
+            style="@style/LeftTitle"
+            android:text="ATX-Agent"
+            android:textStyle="bold"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btn_finish"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/SelectButton"
+                android:text="@string/quit" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/btn_identify"
-        android:text="Identify" />
+            <Button
+                android:id="@+id/btn_identify"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/SelectButton"
+                android:text="@string/identify" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/LeftTitle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="@string/shot_cut"
+                android:textStyle="bold"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="快捷方式" />
+            <TextView
+                android:id="@+id/ip_address"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/LeftTitle" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/development_settings"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/SelectButton"
+                android:text="@string/develop_mode" />
 
-    <Button
-        android:id="@+id/development_settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="开发者选项" />
+            <Button
+                android:id="@+id/accessibility"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/SelectButton"
+                android:text="@string/barrier_free" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/accessibility"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="无障碍" />
+        <Button
+            android:id="@+id/stop_uiautomator"
+            style="@style/SelectButton"
+            android:text="@string/stop_uiautomator" />
 
-    <Button
-        android:id="@+id/stop_uiautomator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="停止UIAutomator" />
+        <Button
+            android:id="@+id/stop_atx_agent"
+            style="@style/SelectButton"
+            android:text="@string/stop_atxagent" />
 
-    <Button
-        android:id="@+id/stop_atx_agent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="停止ATXAgent" />
+        <Button
+            android:id="@+id/btn_coor_locate"
+            style="@style/SelectButton"
+            android:text="@string/coor_switch" />
 
-    <TextView
-        android:id="@+id/ip_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10sp"
-        android:text="IP: " />
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btn_screen_record"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/SelectButton"
+                android:text="@string/screen_record" />
+            <Button
+                android:id="@+id/btn_record_setting"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/SelectButton"
+                android:text="@string/record_setting" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>
