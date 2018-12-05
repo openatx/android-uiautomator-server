@@ -56,7 +56,6 @@ public class MainActivity extends Activity {
             // restart service
             Intent intent = new Intent(MainActivity.this, Service.class);
             startService(intent);
-//            bindService(intent, connection, BIND_IMPORTANT | BIND_AUTO_CREATE);
         }
     };
 
@@ -243,7 +242,6 @@ public class MainActivity extends Activity {
         super.onDestroy();
         // must unbind service, otherwise it will leak memory
         unbindService(connection);
-        connection = null;
         Log.i(TAG, "unbind service");
     }
 }
