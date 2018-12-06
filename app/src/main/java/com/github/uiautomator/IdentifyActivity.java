@@ -3,6 +3,7 @@ package com.github.uiautomator;
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.github.uiautomator.util.Permissons4App;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

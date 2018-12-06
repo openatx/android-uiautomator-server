@@ -1,10 +1,12 @@
 package com.github.uiautomator;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.Toast;
 
 import java.util.Timer;
@@ -14,7 +16,7 @@ public class ToastHelper {
 
     private static final String TAG = "ToastHelper";
 
-    WindowManager windowManager;
+    private WindowManager windowManager;
     private View toastView;
     private WindowManager.LayoutParams params;
     private int duration;
@@ -22,14 +24,14 @@ public class ToastHelper {
     private ToastHelper(Context context, String text, int duration){
         this.duration = duration;
         timer = new Timer();
-        Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
+        @SuppressLint("ShowToast") Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
         windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
         toastView = toast.getView();
         params = new WindowManager.LayoutParams();
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         params.width = WindowManager.LayoutParams.WRAP_CONTENT;
         params.format = PixelFormat.TRANSLUCENT;
-        params.windowAnimations = toast.getView().getAnimation().INFINITE;
+        params.windowAnimations = Animation.INFINITE;
         params.type = WindowManager.LayoutParams.TYPE_TOAST;
         params.setTitle("Toast");
         params.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON

@@ -1,8 +1,8 @@
 package com.github.uiautomator;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.uiautomator.util.MemoryManager;
+import com.github.uiautomator.util.Permissons4App;
 
 import org.w3c.dom.Text;
 
@@ -42,6 +45,7 @@ public class MainActivity extends Activity {
 
     private TextView tvInStorage;
     private TextView textViewIP;
+    private String[] permisssions;
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -171,6 +175,20 @@ public class MainActivity extends Activity {
         }
         textViewIP = (TextView) findViewById(R.id.ip_address);
         tvInStorage = (TextView) findViewById(R.id.in_storage);
+
+        permisssions = new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.READ_PHONE_NUMBERS,
+                Manifest.permission.READ_SMS,
+                Manifest.permission.RECEIVE_SMS};
+        Permissons4App.initPermissions(this, permisssions);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Permissons4App.handleRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void atxAgentStopConfirm() {
