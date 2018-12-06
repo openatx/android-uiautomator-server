@@ -32,7 +32,7 @@
             style="@style/LeftTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/service_title"
+            android:text="@string/monitor_service_title"
             android:textStyle="bold" />
 
         <LinearLayout

@@ -23,7 +23,7 @@ public class RotationMonitor extends AbstractMonitor {
 
     @Override
     public void register() {
-        Log.i(TAG, "Monitor starting");
+        Log.i(TAG, "Rotation monitor starting");
 
         this.windowService = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         report(); // need to notify for the first time

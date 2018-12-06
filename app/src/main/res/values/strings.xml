@@ -26,9 +26,14 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="service_ticker">UiAutomator is running</string>
-    <string name="service_title">UiAutomator</string>
-    <string name="service_text">service is running</string>
+    <string name="monitor_service_ticker">Monitor service is running</string>
+    <string name="monitor_service_title">UIAutomator Monitor</string>
+    <string name="monitor_service_text">Monitor service is running</string>
+    <string name="livedetect_service_ticker">Live detect service is running</string>
+    <string name="livedetect_service_title">UIAutomator Live detect</string>
+    <string name="livedetect_service_text">Live detect service is running</string>
+    <string name="agent_die">:agent is die</string>
+    <string name="agent_live">:agent is live</string>
     <string name="fast_input_label">FastInputIME</string>
     <string name="stop_atxagent">停止ATXAGENT</string>
     <string name="start_atxagent">启动ATXAGENT</string>

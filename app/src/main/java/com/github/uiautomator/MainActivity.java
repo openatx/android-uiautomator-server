@@ -10,12 +10,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
@@ -26,19 +24,14 @@ import android.widget.Toast;
 import com.github.uiautomator.util.MemoryManager;
 import com.github.uiautomator.util.Permissons4App;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okio.BufferedSink;
 
 public class MainActivity extends Activity {
     private final String TAG = "ATXMainActivity";
@@ -58,7 +51,7 @@ public class MainActivity extends Activity {
             Log.i(TAG, "service disconnected");
 
             // restart service
-            Intent intent = new Intent(MainActivity.this, Service.class);
+            Intent intent = new Intent(MainActivity.this, MonitorService.class);
             startService(intent);
         }
     };
@@ -68,7 +61,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent serviceIntent = new Intent(this, Service.class);
+        Intent serviceIntent = new Intent(this, MonitorService.class);
         startService(serviceIntent);
         bindService(serviceIntent, connection, BIND_IMPORTANT | BIND_AUTO_CREATE);
 
@@ -77,7 +70,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 unbindService(connection);
-                stopService(new Intent(MainActivity.this, Service.class));
+                stopService(new Intent(MainActivity.this, MonitorService.class));
                 finish();
             }
         });

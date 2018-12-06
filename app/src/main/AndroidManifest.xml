@@ -54,12 +54,23 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".Service"
+            android:name=".MonitorService"
             android:enabled="true"
             android:exported="true">
-            <intent-filter android:priority="1000">
-                <action android:name="com.github.uiautomator.ACTION_START" />
-                <action android:name="com.github.uiautomator.ACTION_STOP" />
+            <intent-filter android:priority="10000">
+                <action android:name="com.github.uiautomator.monitor.ACTION_START" />
+                <action android:name="com.github.uiautomator.monitor.ACTION_STOP" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".LiveDetectService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="10000">
+                <action android:name="com.github.uiautomator.liveDetect.ACTION_START" />
+                <action android:name="com.github.uiautomator.liveDetect.ACTION_STOP" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -74,7 +85,6 @@
             android:stateNotNeeded="true">
             <intent-filter>
                 <action android:name="com.github.uiautomator.ACTION_IDENTIFY" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -83,7 +93,7 @@
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

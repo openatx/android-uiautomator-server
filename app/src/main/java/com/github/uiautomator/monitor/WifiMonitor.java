@@ -8,9 +8,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 import com.github.uiautomator.R;
-import com.github.uiautomator.Service;
+import com.github.uiautomator.MonitorService;
 
 /**
  * Created by hzsunshx on 2018/1/16.
@@ -26,6 +27,7 @@ public class WifiMonitor extends AbstractMonitor {
 
     @Override
     public void register() {
+        Log.i(TAG, "Wifi monitor starting");
         this.receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -46,7 +48,7 @@ public class WifiMonitor extends AbstractMonitor {
                     if (info != null) {
                         //如果当前的网络连接成功并且网络连接可用
                         if (NetworkInfo.State.CONNECTED == info.getState() && info.isAvailable()) {
-                            WifiManager wifi = (WifiManager)((Service) context).getSystemService(Context.WIFI_SERVICE);
+                            WifiManager wifi = (WifiManager)((MonitorService) context).getSystemService(Context.WIFI_SERVICE);
                             WifiInfo wInfo = wifi.getConnectionInfo();
                             report(notifier, new WifiInfos(true, wInfo.getSSID()).toString());
                         }
@@ -55,7 +57,7 @@ public class WifiMonitor extends AbstractMonitor {
                 WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 int ip = wifiManager.getConnectionInfo().getIpAddress();
                 String ipStr = (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "." + ((ip >> 24) & 0xFF);
-                ((Service) context).setNotificationContentText(context.getString(R.string.service_text) + " on " + ipStr);
+                ((MonitorService) context).setNotificationContentText(context.getString(R.string.monitor_service_text) + " on " + ipStr);
             }
         };
 

@@ -23,7 +23,7 @@ public class BatteryMonitor extends AbstractMonitor {
 
     @Override
     public void register() {
-        Log.i(TAG, "Monitor starting");
+        Log.i(TAG, "Battery monitor starting");
 
         this.receiver = new BroadcastReceiver() {
             private int level;

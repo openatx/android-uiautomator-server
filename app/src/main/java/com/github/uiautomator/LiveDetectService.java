@@ -1,5 +1,6 @@
 package com.github.uiautomator;
 
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,29 +14,69 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.github.uiautomator.monitor.AbstractMonitor;
-import com.github.uiautomator.monitor.BatteryMonitor;
-import com.github.uiautomator.monitor.HttpPostNotifier;
-import com.github.uiautomator.monitor.RotationMonitor;
-import com.github.uiautomator.monitor.WifiMonitor;
+import com.github.uiautomator.util.OkhttpManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONObject;
 
-public class Service extends android.app.Service {
-    public static final String ACTION_START = "com.github.uiautomator.ACTION_START";
-    public static final String ACTION_STOP = "com.github.uiautomator.ACTION_STOP";
+import java.io.IOException;
 
-    private static final String TAG = "UIAService";
-    private static final int NOTIFICATION_ID = 0x1;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+public class LiveDetectService extends IntentService {
+    public static final String ACTION_START = "com.github.uiautomator.liveDetect.ACTION_START";
+    public static final String ACTION_STOP = "com.github.uiautomator.liveDetect.ACTION_STOP";
+
+    private static final String TAG = "LiveDetectService";
+    private static final int NOTIFICATION_ID = 0x2;
 
     private NotificationCompat.Builder builder;
-    private List<AbstractMonitor> monitors = new ArrayList<>();
+
+    public LiveDetectService() {
+        super("LiveDetectService");
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
         // We don't support binding to this service
         return null;
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        while(true) {
+            try {
+                Thread.sleep(10 * 1000);
+                final String url = "http://127.0.0.1:7912/ping";
+                OkhttpManager.getSingleton().post(url, new JSONObject().toString(), new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        setNotificationContentText(getString(R.string.livedetect_service_text) + getString(R.string.agent_die));
+                        Log.e(TAG, "call url:" + url + " is failed");
+                        Log.e(TAG, "exception:" + e);
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String result = response.body().string();
+                        if (result.equals("pong")) {
+                            setNotificationContentText(getString(R.string.livedetect_service_text) + getString(R.string.agent_live));
+                        }
+                        Log.i(TAG, result);
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
+            }
+        }
+    }
+
+    public void setNotificationContentText(String text) {
+        builder.setContentText(text);
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(NOTIFICATION_ID, builder.build());
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -56,31 +97,20 @@ public class Service extends android.app.Service {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         String channelId = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channelId = createNotificationChannel("my_service", "My Background Service");
+            channelId = createNotificationChannel("live detect service", "Live Detect Service");
         } else {
             // If earlier version channel ID is not used
             // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
         }
         builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setTicker(getString(R.string.service_ticker))
-                .setContentTitle(getString(R.string.service_title))
-                .setContentText(getString(R.string.service_text))
-                .setContentIntent(PendingIntent.getActivity(this, NOTIFICATION_ID, notificationIntent, 0))
+                .setTicker(getString(R.string.livedetect_service_ticker))
+                .setContentTitle(getString(R.string.livedetect_service_title))
+                .setContentText(getString(R.string.livedetect_service_text))
+                .setContentIntent(PendingIntent.getActivity(this, NOTIFICATION_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                 .setWhen(System.currentTimeMillis());
         Notification notification = builder.build();
         startForeground(NOTIFICATION_ID, notification);
-
-        HttpPostNotifier notifier = new HttpPostNotifier("http://127.0.0.1:7912");
-        addMonitor(new BatteryMonitor(this, notifier));
-        addMonitor(new RotationMonitor(this, notifier));
-        addMonitor(new WifiMonitor(this, notifier));
-    }
-
-    public void setNotificationContentText(String text) {
-        builder.setContentText(text);
-        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(NOTIFICATION_ID, builder.build());
     }
 
     @Override
@@ -88,7 +118,6 @@ public class Service extends android.app.Service {
         super.onDestroy();
         Log.i(TAG, "Stopping service");
         stopForeground(true);
-        removeAllMonitor();
     }
 
     @Override
@@ -111,15 +140,5 @@ public class Service extends android.app.Service {
     @Override
     public void onLowMemory() {
         Log.w(TAG, "Low memory");
-    }
-
-    private void addMonitor(AbstractMonitor monitor) {
-        monitors.add(monitor);
-    }
-
-    private void removeAllMonitor() {
-        for (AbstractMonitor monitor : monitors) {
-            monitor.unregister();
-        }
     }
 }
