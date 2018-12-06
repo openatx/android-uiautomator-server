@@ -1,6 +1,7 @@
 package com.github.uiautomator;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -10,13 +11,17 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +43,6 @@ public class MainActivity extends Activity {
 
     private TextView tvInStorage;
     private TextView textViewIP;
-    private String[] permisssions;
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -56,6 +60,7 @@ public class MainActivity extends Activity {
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +70,8 @@ public class MainActivity extends Activity {
         startService(serviceIntent);
         bindService(serviceIntent, connection, BIND_IMPORTANT | BIND_AUTO_CREATE);
 
-        Button btnFinish = (Button) findViewById(R.id.btn_finish);
-        btnFinish.setOnClickListener(new View.OnClickListener() {
+        Button btnFinish = findViewById(R.id.btn_finish);
+        btnFinish.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 unbindService(connection);
@@ -75,8 +80,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button btnIdentify = (Button) findViewById(R.id.btn_identify);
-        btnIdentify.setOnClickListener(new View.OnClickListener() {
+        Button btnIdentify = findViewById(R.id.btn_identify);
+        btnIdentify.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, IdentifyActivity.class);
@@ -87,21 +92,21 @@ public class MainActivity extends Activity {
             }
         });
 
-        ((Button) findViewById(R.id.accessibility)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.accessibility).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
             }
         });
 
-        ((Button) findViewById(R.id.development_settings)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.development_settings).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
             }
         });
 
-        ((Button) findViewById(R.id.start_uiautomator)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.start_uiautomator).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Request request = new Request.Builder()
@@ -127,7 +132,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        ((Button) findViewById(R.id.stop_uiautomator)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.stop_uiautomator).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 Request request = new Request.Builder()
@@ -153,7 +158,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        ((Button) findViewById(R.id.stop_atx_agent)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.stop_atx_agent).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 atxAgentStopConfirm();
@@ -166,10 +171,10 @@ public class MainActivity extends Activity {
             Log.i(TAG, "launch args hide:true, move to background");
             moveTaskToBack(true);
         }
-        textViewIP = (TextView) findViewById(R.id.ip_address);
-        tvInStorage = (TextView) findViewById(R.id.in_storage);
+        textViewIP = findViewById(R.id.ip_address);
+        tvInStorage = findViewById(R.id.in_storage);
 
-        permisssions = new String[]{
+        String[] permisssions = new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.READ_PHONE_NUMBERS,
@@ -179,7 +184,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Permissons4App.handleRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -226,6 +231,7 @@ public class MainActivity extends Activity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onResume() {
         super.onResume();
