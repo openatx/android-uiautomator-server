@@ -7,11 +7,11 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.util.Log;
 
-public class AdbBrodcastReceiver extends BroadcastReceiver {
+public class AdbBroadcastReceiver extends BroadcastReceiver {
 
-    MockLocationProvider mockGPS;
-    MockLocationProvider mockWifi;
-    String TAG = "MockGPSReceiver";
+    private MockLocationProvider mockGPS;
+    private MockLocationProvider mockWifi;
+    private static final String TAG = "MockGPSReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {

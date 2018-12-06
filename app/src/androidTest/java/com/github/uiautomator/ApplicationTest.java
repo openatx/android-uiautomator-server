@@ -20,17 +20,17 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package com.github.uiautomator;
-
-import android.app.Application;
-import android.test.ApplicationTestCase;
+//package com.github.uiautomator;
+//
+//import android.app.Application;
+//import android.test.ApplicationTestCase;
 
 /**
  * [Testing Fundamentals](http://d.android.com/tools/testing/testing_android.html)
+ * This class was deprecated in API level 24. Use ActivityTestRule instead. New tests should be written using the Android Testing Support Library.
  */
-public class ApplicationTest extends ApplicationTestCase<Application> {
-    public ApplicationTest() {
-        super(Application.class);
-    }
-}
+//public class ApplicationTest extends ApplicationTestCase<Application> {
+//    public ApplicationTest() {
+//        super(Application.class);
+//    }
+//}
