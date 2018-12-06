@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.os.storage.StorageManager;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -49,7 +50,7 @@ public class MemoryManager {
      *
      * @return true : 可用<br>false : 不可用
      */
-    public static boolean isSDCardEnable() {
+    private static boolean isSDCardEnable() {
         return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 
@@ -71,7 +72,7 @@ public class MemoryManager {
         }
     }
 
-    public static String getSDCardPath(){
+    private static String getSDCardPath(){
         File path = Environment.getExternalStorageDirectory();
         return path.getPath();
     }
@@ -119,7 +120,7 @@ public class MemoryManager {
     /*
     获取全部存储设备信息封装对象
      */
-    public static ArrayList<Volume> getVolume(Context context) {
+    private static ArrayList<Volume> getVolume(Context context) {
         ArrayList<Volume> list_storagevolume = new ArrayList<Volume>();
 
         StorageManager storageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
@@ -148,7 +149,6 @@ public class MemoryManager {
                     }
 
                 }
-            } else {
             }
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -162,7 +162,7 @@ public class MemoryManager {
      */
     public static class Volume {
         protected String path;
-        protected boolean removable;
+        boolean removable;
         protected String state;
 
         public String getPath() {
@@ -177,7 +177,7 @@ public class MemoryManager {
             return removable;
         }
 
-        public void setRemovable(boolean removable) {
+        void setRemovable(boolean removable) {
             this.removable = removable;
         }
 
@@ -200,6 +200,7 @@ public class MemoryManager {
         long freeBytes;
         long availableBytes;
 
+        @NonNull
         @Override
         public String toString() {
             return "isExist=" + isExist +

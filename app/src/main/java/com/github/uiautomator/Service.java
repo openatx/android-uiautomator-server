@@ -1,11 +1,15 @@
 package com.github.uiautomator;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -34,17 +38,35 @@ public class Service extends android.app.Service {
         return null;
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private String createNotificationChannel(String channelId, String channelName){
+        NotificationChannel chan = new NotificationChannel(channelId,
+                channelName, NotificationManager.IMPORTANCE_NONE);
+        chan.setLightColor(Color.BLUE);
+        chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        NotificationManager service = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        service.createNotificationChannel(chan);
+        return channelId;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
-        builder = new NotificationCompat.Builder(this)
+        String channelId = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            channelId = createNotificationChannel("my_service", "My Background Service");
+        } else {
+            // If earlier version channel ID is not used
+            // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+        }
+        builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setTicker(getString(R.string.service_ticker))
                 .setContentTitle(getString(R.string.service_title))
                 .setContentText(getString(R.string.service_text))
-                .setContentIntent(PendingIntent.getActivity(this, 0, notificationIntent, 0))
+                .setContentIntent(PendingIntent.getActivity(this, NOTIFICATION_ID, notificationIntent, 0))
                 .setWhen(System.currentTimeMillis());
         Notification notification = builder.build();
         startForeground(NOTIFICATION_ID, notification);
@@ -77,7 +99,6 @@ public class Service extends android.app.Service {
 
         if (ACTION_START.equals(action)) {
             Log.i(TAG, "Receive start-service action, but ignore it");
-
         } else if (ACTION_STOP.equals(action)) {
             stopSelf();
         } else {
