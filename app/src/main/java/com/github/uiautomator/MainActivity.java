@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call call, Response response) {
                 Looper.prepare();
                 Toast.makeText(MainActivity.this, "atx-agent stopped", Toast.LENGTH_SHORT).show();
                 Looper.loop();
