@@ -45,10 +45,9 @@ public class FastInputIME extends InputMethodService {
     Socket socketClient;
     WhatsInputThread inputThread;
 
-    private Handler handler = new Handler() {
+    private Handler handler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case INPUT_EDIT:
                     String text = msg.getData().getString("text");
@@ -57,8 +56,9 @@ public class FastInputIME extends InputMethodService {
                 default:
                     break;
             }
+            return true;
         }
-    };
+    });
 
     @Override
     public View onCreateInputView() {
