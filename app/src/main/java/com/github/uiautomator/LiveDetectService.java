@@ -52,7 +52,8 @@ public class LiveDetectService extends IntentService {
                 OkhttpManager.getSingleton().post(url, new JSONObject().toString(), new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        setNotificationContentText(getString(R.string.livedetect_service_text) + getString(R.string.agent_die));
+                        String str = getString(R.string.livedetect_service_text) + getString(R.string.agent_die);
+                        setNotificationContentText(str);
                         Log.e(TAG, "call url:" + url + " is failed");
                         Log.e(TAG, "exception:" + e);
                     }
