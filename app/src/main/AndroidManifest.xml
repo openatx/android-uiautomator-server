@@ -64,17 +64,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".LiveDetectService"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter android:priority="10000">
-                <action android:name="com.github.uiautomator.liveDetect.ACTION_START" />
-                <action android:name="com.github.uiautomator.liveDetect.ACTION_STOP" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </service>
 
         <activity
             android:name=".IdentifyActivity"

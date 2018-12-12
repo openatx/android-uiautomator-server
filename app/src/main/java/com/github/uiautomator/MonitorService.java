@@ -1,5 +1,6 @@
 package com.github.uiautomator;
 
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -7,8 +8,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -18,11 +21,19 @@ import com.github.uiautomator.monitor.BatteryMonitor;
 import com.github.uiautomator.monitor.HttpPostNotifier;
 import com.github.uiautomator.monitor.RotationMonitor;
 import com.github.uiautomator.monitor.WifiMonitor;
+import com.github.uiautomator.util.OkhttpManager;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MonitorService extends android.app.Service {
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
+public class MonitorService extends IntentService {
     public static final String ACTION_START = "com.github.uiautomator.monitor.ACTION_START";
     public static final String ACTION_STOP = "com.github.uiautomator.monitor.ACTION_STOP";
 
@@ -32,10 +43,56 @@ public class MonitorService extends android.app.Service {
     private NotificationCompat.Builder builder;
     private List<AbstractMonitor> monitors = new ArrayList<>();
 
+    /**
+     * Creates an IntentService.  Invoked by your subclass's constructor.
+     */
+    public MonitorService() {
+        super("MonitorService");
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         // We don't support binding to this service
         return null;
+    }
+
+    @Override
+    protected void onHandleIntent(@Nullable Intent intent) {
+        while(true) {
+            try {
+                Thread.sleep(10 * 1000);
+                final String url = "http://127.0.0.1:7912/ping";
+                OkhttpManager.getSingleton().post(url, new JSONObject().toString(), new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        WifiManager wifiManager = (WifiManager) MonitorService.this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                        int ip = wifiManager.getConnectionInfo().getIpAddress();
+                        String ipStr = (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "." + ((ip >> 24) & 0xFF);
+                        String str = getString(R.string.monitor_service_text) + " on " + ipStr;
+                        str += getString(R.string.agent_die);
+                        setNotificationContentText(str);
+                        Log.e(TAG, "call url:" + url + " is failed, and exception:" + e);
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String result = response.body().string();
+                        if (result.equals("pong")) {
+                            WifiManager wifiManager = (WifiManager) MonitorService.this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                            int ip = wifiManager.getConnectionInfo().getIpAddress();
+                            String ipStr = (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "." + ((ip >> 24) & 0xFF);
+                            String str = getString(R.string.monitor_service_text) + " on " + ipStr;
+                            str += getString(R.string.agent_live);
+                            setNotificationContentText(str);
+                        }
+                        Log.i(TAG, result);
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

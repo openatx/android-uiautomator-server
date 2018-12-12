@@ -117,12 +117,6 @@ public class Stub {
 
         Log.d("Launch service");
         startMonitorService(context);
-        startLiveDetectService(context);
-    }
-
-    private void startLiveDetectService(Context context) {
-        Intent intent = new Intent("com.github.uiautomator.liveDetect.ACTION_START");
-        context.startService(intent);
     }
 
     private void startMonitorService(Context context) {
@@ -135,12 +129,6 @@ public class Stub {
         server.stop();
         Context context = InstrumentationRegistry.getContext();
         stopMonitorService(context);
-        stopLiveDetectService(context);
-    }
-
-    private void stopLiveDetectService(Context context) {
-        Intent intent = new Intent("com.github.uiautomator.liveDetect.ACTION_STOP");
-        context.startService(intent);
     }
 
     private void stopMonitorService(Context context) {

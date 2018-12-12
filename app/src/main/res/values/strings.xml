@@ -29,9 +29,6 @@
     <string name="monitor_service_ticker">Monitor service is running</string>
     <string name="monitor_service_title">UIAutomator Monitor</string>
     <string name="monitor_service_text">Monitor service is running</string>
-    <string name="livedetect_service_ticker">Live detect service is running</string>
-    <string name="livedetect_service_title">UIAutomator Live detect</string>
-    <string name="livedetect_service_text">Live detect service is running</string>
     <string name="agent_die">:agent is die</string>
     <string name="agent_live">:agent is live</string>
     <string name="fast_input_label">FastInputIME</string>
