@@ -34,8 +34,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class Service extends IntentService {
-    public static final String ACTION_START = "com.github.uiautomator.monitor.ACTION_START";
-    public static final String ACTION_STOP = "com.github.uiautomator.monitor.ACTION_STOP";
+    public static final String ACTION_START = "com.github.uiautomator.ACTION_START";
+    public static final String ACTION_STOP = "com.github.uiautomator.ACTION_STOP";
 
     private static final String TAG = "UIAService";
     private static final int NOTIFICATION_ID = 0x1;

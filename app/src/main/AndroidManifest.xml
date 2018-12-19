@@ -58,8 +58,8 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="10000">
-                <action android:name="com.github.uiautomator.monitor.ACTION_START" />
-                <action android:name="com.github.uiautomator.monitor.ACTION_STOP" />
+                <action android:name="com.github.uiautomator.ACTION_START" />
+                <action android:name="com.github.uiautomator.ACTION_STOP" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

@@ -120,7 +120,7 @@ public class Stub {
     }
 
     private void startMonitorService(Context context) {
-        Intent intent = new Intent("com.github.uiautomator.monitor.ACTION_START");
+        Intent intent = new Intent("com.github.uiautomator.ACTION_START");
         context.startService(intent);
     }
 
@@ -132,7 +132,7 @@ public class Stub {
     }
 
     private void stopMonitorService(Context context) {
-        Intent intent = new Intent("com.github.uiautomator.monitor.ACTION_STOP");
+        Intent intent = new Intent("com.github.uiautomator.ACTION_STOP");
         context.startService(intent);
     }
 
