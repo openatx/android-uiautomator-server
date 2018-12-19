@@ -54,7 +54,7 @@
             </intent-filter>
         </receiver>
         <service
-            android:name=".MonitorService"
+            android:name=".Service"
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="10000">

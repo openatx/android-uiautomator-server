@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
             Log.i(TAG, "service disconnected");
 
             // restart service
-            Intent intent = new Intent(MainActivity.this, MonitorService.class);
+            Intent intent = new Intent(MainActivity.this, Service.class);
             startService(intent);
         }
     };
@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent serviceIntent = new Intent(this, MonitorService.class);
+        Intent serviceIntent = new Intent(this, Service.class);
         startService(serviceIntent);
         bindService(serviceIntent, connection, BIND_IMPORTANT | BIND_AUTO_CREATE);
 
@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 unbindService(connection);
-                stopService(new Intent(MainActivity.this, MonitorService.class));
+                stopService(new Intent(MainActivity.this, Service.class));
                 finish();
             }
         });

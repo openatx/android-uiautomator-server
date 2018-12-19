@@ -33,7 +33,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class MonitorService extends IntentService {
+public class Service extends IntentService {
     public static final String ACTION_START = "com.github.uiautomator.monitor.ACTION_START";
     public static final String ACTION_STOP = "com.github.uiautomator.monitor.ACTION_STOP";
 
@@ -46,7 +46,7 @@ public class MonitorService extends IntentService {
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      */
-    public MonitorService() {
+    public Service() {
         super("MonitorService");
     }
 
@@ -65,7 +65,7 @@ public class MonitorService extends IntentService {
                 OkhttpManager.getSingleton().post(url, new JSONObject().toString(), new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        WifiManager wifiManager = (WifiManager) MonitorService.this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                        WifiManager wifiManager = (WifiManager) Service.this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                         int ip = wifiManager.getConnectionInfo().getIpAddress();
                         String ipStr = (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "." + ((ip >> 24) & 0xFF);
                         String str = getString(R.string.monitor_service_text) + " on " + ipStr;
@@ -78,7 +78,7 @@ public class MonitorService extends IntentService {
                     public void onResponse(Call call, Response response) throws IOException {
                         String result = response.body().string();
                         if (result.equals("pong")) {
-                            WifiManager wifiManager = (WifiManager) MonitorService.this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                            WifiManager wifiManager = (WifiManager) Service.this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                             int ip = wifiManager.getConnectionInfo().getIpAddress();
                             String ipStr = (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "." + ((ip >> 24) & 0xFF);
                             String str = getString(R.string.monitor_service_text) + " on " + ipStr;
