@@ -33,6 +33,12 @@ public interface AutomatorService {
     final static int ERROR_CODE_BASE = -32000;
 
     /**
+     * It's to play a section music to test
+     * @return
+     */
+    boolean playSound(String path);
+
+    /**
      * It's to test if the service is alive.
      *
      * @return 'pong'
