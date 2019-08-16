@@ -42,6 +42,7 @@ public class Service extends IntentService {
 
     private NotificationCompat.Builder builder;
     private List<AbstractMonitor> monitors = new ArrayList<>();
+    private BatteryMonitor bm;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -129,7 +130,9 @@ public class Service extends IntentService {
         startForeground(NOTIFICATION_ID, notification);
 
         HttpPostNotifier notifier = new HttpPostNotifier("http://127.0.0.1:7912");
-        addMonitor(new BatteryMonitor(this, notifier));
+//        addMonitor(new BatteryMonitor(this, notifier));
+        BatteryMonitor bm = new BatteryMonitor(this, notifier);
+        addMonitor(bm);
         addMonitor(new RotationMonitor(this, notifier));
         addMonitor(new WifiMonitor(this, notifier));
     }
@@ -146,6 +149,7 @@ public class Service extends IntentService {
         Log.i(TAG, "Stopping service");
         stopForeground(true);
         removeAllMonitor();
+        bm.unregister();
     }
 
     @Override

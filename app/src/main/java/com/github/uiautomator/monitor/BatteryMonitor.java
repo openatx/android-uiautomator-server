@@ -44,6 +44,7 @@ public class BatteryMonitor extends AbstractMonitor {
     public void unregister() {
         if (receiver != null) {
             context.unregisterReceiver(receiver);
+//            bm.unregister();
         }
     }
 
