@@ -566,7 +566,7 @@ public interface AutomatorService {
      * @param percent expect value: percent >= 0.0F && percent <= 1.0F,The length of the swipe as a percentage of this object's size.
      * @param steps   indicates the number of injected move steps into the system. Steps are injected about 5ms apart. So a 100 steps may take about 1/2 second to complete.
      * @return true of successful
-     * @throws android.support.test.uiautomator.UiObjectNotFoundException
+     * @throws UiObjectNotFoundException
      */
     @JsonRpcErrors({@JsonRpcError(exception = UiObjectNotFoundException.class, code = ERROR_CODE_BASE - 2)})
     boolean swipe(Selector obj, String dir, float percent, int steps) throws UiObjectNotFoundException;
@@ -1013,4 +1013,17 @@ public interface AutomatorService {
      */
     @JsonRpcErrors({@JsonRpcError(exception = NotImplementedException.class, code = ERROR_CODE_BASE - 3)})
     ConfiguratorInfo setConfigurator(ConfiguratorInfo info) throws NotImplementedException;
+
+    /**
+     * set Clipboard
+     * @param label User-visible label for the clip data.
+     * @param text The actual text in the clip.
+     */
+    void setClipboard(String label, String text);
+
+    /**
+     * get Clipboard data
+     * @return Clipboard data or null
+     */
+    String getClipboard();
 }
