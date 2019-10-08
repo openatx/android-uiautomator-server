@@ -1013,4 +1013,17 @@ public interface AutomatorService {
      */
     @JsonRpcErrors({@JsonRpcError(exception = NotImplementedException.class, code = ERROR_CODE_BASE - 3)})
     ConfiguratorInfo setConfigurator(ConfiguratorInfo info) throws NotImplementedException;
+
+    /**
+     * set Clipboard
+     * @param label User-visible label for the clip data.
+     * @param text The actual text in the clip.
+     */
+    void setClipboard(String label, String text);
+
+    /**
+     * get Clipboard data
+     * @return Clipboard data or null
+     */
+    String getClipboard();
 }

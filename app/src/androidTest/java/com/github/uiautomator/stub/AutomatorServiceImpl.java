@@ -24,6 +24,9 @@
 package com.github.uiautomator.stub;
 
 import android.app.UiAutomation;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Handler;
@@ -68,15 +71,22 @@ public class AutomatorServiceImpl implements AutomatorService {
     private final ConcurrentHashMap<String, UiObject> uiObjects = new ConcurrentHashMap<String, UiObject>();
     private SoundPool soundPool = new SoundPool(100, AudioManager.STREAM_MUSIC, 0);
 
+    Handler handler = new Handler(Looper.getMainLooper());
 
     private UiDevice device;
     private UiAutomation uiAutomation;
+    ClipboardManager clipboard;
 
     public AutomatorServiceImpl() {
         this.uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
         this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-
-        // play music when loaded
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                AutomatorServiceImpl.this.clipboard = (ClipboardManager) InstrumentationRegistry.getTargetContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            }
+        });
+         // play music when loaded
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
@@ -142,7 +152,7 @@ public class AutomatorServiceImpl implements AutomatorService {
 
     @Override
     public boolean makeToast(final String text, final int duration) {
-        Handler handler = new Handler(Looper.getMainLooper());
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -1605,5 +1615,19 @@ public class AutomatorServiceImpl implements AutomatorService {
     public ConfiguratorInfo setConfigurator(ConfiguratorInfo info) throws NotImplementedException {
         ConfiguratorInfo.setConfigurator(info);
         return new ConfiguratorInfo();
+    }
+
+    @Override
+    public void setClipboard(String label, String text) {
+        clipboard.setPrimaryClip(ClipData.newPlainText(null, text));
+    }
+
+    @Override
+    public String getClipboard() {
+        final ClipData clip = clipboard.getPrimaryClip();
+        if (clip != null && clip.getItemCount() > 0 && clipboard.getPrimaryClip().getItemAt(0).getText() != null) {
+            return clipboard.getPrimaryClip().getItemAt(0).getText().toString();
+        }
+        return null;
     }
 }
