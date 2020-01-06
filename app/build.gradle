@@ -41,7 +41,12 @@ android {
     // 1: original version
     // 2: update all dependencies to latest
     // 6: input method, battery,rotation monitor
+    def buildTendId = "E924B0ECD0A949A2A4D06F938C8DF72B"
+    def buildChannel = "official"
+
     defaultConfig {
+        buildConfigField "String", "buildTendId", "\"${buildTendId}\""
+        buildConfigField "String", "buildChannel", "\"${buildChannel}\""
         applicationId "com.github.uiautomator"
         minSdkVersion 18
         targetSdkVersion 28
