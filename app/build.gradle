@@ -42,7 +42,6 @@ android {
     // 2: update all dependencies to latest
     // 6: input method, battery,rotation monitor
     def buildTendId = System.getenv("TEND_ID")
-    printf ">>>>buildTendId==" + buildTendId
     def buildChannel = "official"
 
     defaultConfig {
