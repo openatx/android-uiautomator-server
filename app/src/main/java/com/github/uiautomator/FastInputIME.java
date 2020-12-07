@@ -66,6 +66,18 @@ public class FastInputIME extends InputMethodService {
     public View onCreateInputView() {
         KeyboardView keyboardView = (KeyboardView) getLayoutInflater().inflate(R.layout.keyboard, null);
 
+        Keyboard keyboard = new Keyboard(this, R.xml.keyboard);
+        keyboardView.setKeyboard(keyboard);
+        keyboardView.setOnKeyboardActionListener(new MyKeyboardActionListener());
+
+        return keyboardView;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.i(TAG, "Input created");
+
         if (mReceiver == null) {
             IntentFilter filter = new IntentFilter();
             filter.addAction("ADB_INPUT_TEXT");
@@ -80,17 +92,6 @@ public class FastInputIME extends InputMethodService {
             mReceiver = new InputMessageReceiver();
             registerReceiver(mReceiver, filter);
         }
-
-        Keyboard keyboard = new Keyboard(this, R.xml.keyboard);
-        keyboardView.setKeyboard(keyboard);
-        keyboardView.setOnKeyboardActionListener(new MyKeyboardActionListener());
-
-        return keyboardView;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
     }
 
     @Override
