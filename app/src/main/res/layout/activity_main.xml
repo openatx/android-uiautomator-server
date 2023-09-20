@@ -20,12 +20,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
+
             <Button
                 style="@style/SelectButton"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:onClick="checkAtxAgentStatus"
-                android:text="刷新服务状态" />
+                android:text="@string/refresh_status" />
 
             <Button
                 android:id="@+id/stop_atx_agent"
@@ -58,12 +59,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
+
             <Button
                 style="@style/SelectButton"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:onClick="checkUiautomatorStatus"
-                android:text="刷新服务状态" />
+                android:text="@string/refresh_status" />
 
             <Button
                 android:id="@+id/testUiautomator"
@@ -71,7 +73,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:onClick="testUiautomator"
-                android:text="测试UIAutomator" />
+                android:text="@string/test_uiautomator" />
         </LinearLayout>
 
         <LinearLayout
@@ -202,8 +204,8 @@
                 style="@style/LeftTitle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:text="本机IP地址:"
-                android:textStyle="bold"/>
+                android:text="@string/local_ip_address"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/ip_address"
@@ -220,7 +222,7 @@
                 style="@style/LeftTitle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:text="服务返回信息"
+                android:text="@string/server_response"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -229,13 +231,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/serviceMessage"
                 style="@style/LeftTitle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
         </LinearLayout>
 
 

@@ -21,7 +21,7 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.github.uiautomator.stub;
+package com.github.uiautomator.stub.exceptions;
 
 import android.os.Build;
 
