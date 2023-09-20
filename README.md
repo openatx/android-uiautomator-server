@@ -1,5 +1,4 @@
 # Purpose
-[![Build Status](https://travis-ci.org/openatx/android-uiautomator-server.svg?branch=master)](https://travis-ci.org/openatx/android-uiautomator-server)
 
 [UIAutomator](http://developer.android.com/tools/testing/testing_ui.html) is a
 great tool to perform Android UI testing, but to do it, you have to write java
@@ -83,52 +82,18 @@ $ adb shell am broadcast -a ADB_GET_CLIPBOARD
 Broadcasting: Intent { act=ADB_GET_CLIPBOARD flg=0x400000 }
 Broadcast completed: result=0
 
-# Get clipboard (with data, base64 encoded)
-$ adb shell am broadcast -a ADB_GET_CLIPBOARD
-Broadcasting: Intent { act=ADB_GET_CLIPBOARD flg=0x400000 }
-Broadcast completed: result=-1, data="5LqG6Kej5Lyg57uf5paH5YyW"
-```
-
-- [Editor Code](https://developer.android.com/reference/android/view/inputmethod/EditorInfo)
-- [Key Event](https://developer.android.com/reference/android/view/KeyEvent)
-
-# Change GPS mock location
-You can change mock location from terminal using adb in order to test GPS on real devices.
-
-```
-adb [-s <specific device>] shell am broadcast -a send.mock [-e lat <latitude>] [-e lon <longitude>]
-        [-e alt <altitude>] [-e accurate <accurate>]
-```
-
-For example:
-
-```
-adb  shell am broadcast -a send.mock -e lat 15.3 -e lon 99
-```
-
-## Show toast
-
-```
-adb shell am start -n com.github.uiautomator/.ToastActivity -e message hello
-```
-
-## Float window
-
-```
-adb shell am start -n com.github.uiautomator/.ToastActivity -e showFloatWindow true # show
-adb shell am start -n com.github.uiautomator/.ToastActivity -e showFloatWindow false # hide
-```
-
-# How to use with Python
+# How to use
 
 ```python
-import uiautomator2 as u2
 
-d = u2.connect()
+from uiautomator import device as d
 
+d.info
 d.screen.on()
 d(text="Settings").click()
 d(scrollable=True).scroll.vert.forward()
+d().gestureM((100,200),(100,300),(100,400)).to((100,400),(100,400),(100,400),100)
+
 ```
 
 Refer to python wrapper library [uiautomator](https://github.com/xiaocong/uiautomator).
@@ -143,6 +108,7 @@ conventional-changelog -p grunt -i CHANGELOG.md -s -r 0
 
 # Notes
 
+If you have any idea, please email xiaocong@gmail.com, hongbin.bao@gmail.com or [submit tickets](https://github.com/xiaocong/uiautomator/issues/new).
 If you have any idea, please email codeskyblue@gmail.com or [submit tickets](https://github.com/openatx/android-uiautomator-server/issues/new).
 
 # Dependencies
@@ -171,3 +137,5 @@ Clipboard, Thanks to @fplust
 - https://github.com/willerce/WhatsInput
 - https://github.com/senzhk/ADBKeyBoard
 - https://github.com/amotzte/android-mock-location-for-development
+# TODO
+- android O support

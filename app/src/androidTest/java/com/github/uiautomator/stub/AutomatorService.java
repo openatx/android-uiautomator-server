@@ -24,10 +24,15 @@
 package com.github.uiautomator.stub;
 
 import android.os.RemoteException;
+
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
+import com.github.uiautomator.stub.exceptions.NotImplementedException;
+import com.github.uiautomator.stub.exceptions.UiAutomator2Exception;
 import com.googlecode.jsonrpc4j.JsonRpcError;
 import com.googlecode.jsonrpc4j.JsonRpcErrors;
+
+import java.util.List;
 
 public interface AutomatorService {
     final static int ERROR_CODE_BASE = -32000;
@@ -167,6 +172,7 @@ public interface AutomatorService {
      * @return the absolute path name of dumped file.
      */
     @Deprecated
+    @JsonRpcErrors({@JsonRpcError(exception=UiAutomator2Exception.class, code=ERROR_CODE_BASE)})
     String dumpWindowHierarchy(boolean compressed, String filename);
 
     /**
@@ -175,6 +181,7 @@ public interface AutomatorService {
      * @param compressed use compressed layout hierarchy or not using setCompressedLayoutHeirarchy method. Ignore the parameter in case the API level lt 18.
      * @return the absolute path name of dumped file.
      */
+    @JsonRpcErrors({@JsonRpcError(exception=UiAutomator2Exception.class, code=ERROR_CODE_BASE)})
     String dumpWindowHierarchy(boolean compressed);
 
     /**
@@ -541,6 +548,22 @@ public interface AutomatorService {
     @JsonRpcErrors({@JsonRpcError(exception = UiObjectNotFoundException.class, code = ERROR_CODE_BASE - 2), @JsonRpcError(exception = NotImplementedException.class, code = ERROR_CODE_BASE - 3)})
     boolean gesture(Selector obj, Point startPoint1, Point startPoint2, Point endPoint1, Point endPoint2, int steps) throws UiObjectNotFoundException, NotImplementedException;
 
+    //FOR 3
+    /**
+     * Generates a 3-pointer gesture with arbitrary starting and ending points.
+     * @param obj the target ui object. ??
+     * @param startPoint1	start point of pointer 1
+     * @param startPoint2	start point of pointer 2
+     * @param startPoint3	start point of pointer 3
+     * @param endPoint1	end point of pointer 1
+     * @param endPoint2	end point of pointer 2
+     * @param endPoint3	end point of pointer 3
+     * @param steps	the number of steps for the gesture. Steps are injected about 5 milliseconds apart, so 100 steps may take around 0.5 seconds to complete.
+     * @return true if all touch events for this gesture are injected successfully, false otherwise
+     * @throws UiObjectNotFoundException
+     */
+    @JsonRpcErrors({@JsonRpcError(exception=UiObjectNotFoundException.class, code=ERROR_CODE_BASE-2), @JsonRpcError(exception=NotImplementedException.class, code=ERROR_CODE_BASE-3)})
+    boolean gesture(Selector obj, Point startPoint1, Point startPoint2, Point startPoint3, Point endPoint1, Point endPoint2, Point endPoint3, int steps) throws UiObjectNotFoundException, NotImplementedException;
     /**
      * Performs a two-pointer gesture, where each pointer moves diagonally toward the other, from the edges to the center of this UiObject .
      *
@@ -1049,4 +1072,20 @@ public interface AutomatorService {
      * @return Clipboard data or null
      */
     String getClipboard();
+
+    /**
+     * Set Configurator.
+     * @param obj the configurator information to be set.
+     * @throws NotImplementedException
+     */
+    @JsonRpcErrors({@JsonRpcError(exception=NotImplementedException.class, code=ERROR_CODE_BASE-3)})
+    List<ObjInfo> finds(Selector obj) throws NotImplementedException;
+
+    /**
+     * toast.
+     * @param switchStatus the toast information to be get and stop.
+     * @throws NotImplementedException
+     */
+    @JsonRpcErrors({@JsonRpcError(exception=NotImplementedException.class, code=ERROR_CODE_BASE)})
+    String toast(String switchStatus) throws NotImplementedException;
 }

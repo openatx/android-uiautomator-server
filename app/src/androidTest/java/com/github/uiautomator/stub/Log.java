@@ -33,8 +33,14 @@ public class Log {
     public static void i(String msg, String s) {
         android.util.Log.i(TAG, msg);
     }
-
+    public static void i(String msg) {
+        android.util.Log.i(TAG, msg);
+    }
     public static void e(String msg) {
         android.util.Log.e(TAG, msg);
     }
+
+	public static void e(String msg,Throwable e) {
+		android.util.Log.e(TAG, msg, e);
+	}
 }

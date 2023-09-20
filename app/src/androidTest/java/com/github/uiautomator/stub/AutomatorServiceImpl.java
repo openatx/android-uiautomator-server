@@ -35,6 +35,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.MotionEvent.PointerCoords;
+
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.Direction;
@@ -47,19 +51,22 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 import androidx.test.uiautomator.Until;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-
 
 import com.github.uiautomator.ToastHelper;
+import com.github.uiautomator.stub.exceptions.NotImplementedException;
+import com.github.uiautomator.stub.helper.NotificationListener;
+import com.github.uiautomator.stub.helper.ReflectionUtils;
+import com.github.uiautomator.stub.helper.XMLHierarchy;
 import com.github.uiautomator.stub.watcher.ClickUiObjectWatcher;
 import com.github.uiautomator.stub.watcher.PressKeysWatcher;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -139,8 +146,11 @@ public class AutomatorServiceImpl implements AutomatorService {
         } else {
             getUiAutomation().setOnAccessibilityEventListener(null);
         }
-    }
 
+        device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        this.uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        Device.getInstance().init(device, uiAutomation);
+    }
     /**
      * It's to test if the service is alive.
      *
@@ -290,6 +300,24 @@ public class AutomatorServiceImpl implements AutomatorService {
      * @param compressed use compressed layout hierarchy or not using setCompressedLayoutHeirarchy method. Ignore the parameter in case the API level lt 18.
      * @return the absolute path name of dumped file.
      */
+//    @Override
+//    public String dumpWindowHierarchy(boolean compressed) {
+//        device.setCompressedLayoutHeirarchy(compressed);
+//        try {
+//            ByteArrayOutputStream os = new ByteArrayOutputStream();
+//            device.dumpWindowHierarchy(os);
+//            os.close();
+//            return os.toString("UTF-8");
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            device.setCompressedLayoutHeirarchy(false);
+//        }
+//        return null;
+//    }
+
     @Override
     public String dumpWindowHierarchy(boolean compressed) {
         device.setCompressedLayoutHeirarchy(compressed);
@@ -307,10 +335,12 @@ public class AutomatorServiceImpl implements AutomatorService {
             } catch (IOException e) {
                 // ignore
             }
+            ReflectionUtils.clearAccessibilityCache();
+            return XMLHierarchy.getRawStringHierarchy();
         }
-
-        return null;
     }
+
+
 
     /**
      * Take a screenshot of current window and store it as PNG The screenshot is adjusted per screen rotation
@@ -933,7 +963,7 @@ public class AutomatorServiceImpl implements AutomatorService {
     /**
      * Generates a two-pointer gesture with arbitrary starting and ending points.
      *
-     * @param obj         the target ui object. ??
+     * @param obj         the target ui object.
      * @param startPoint1 start point of pointer 1
      * @param startPoint2 start point of pointer 2
      * @param endPoint1   end point of pointer 1
@@ -950,6 +980,81 @@ public class AutomatorServiceImpl implements AutomatorService {
     private boolean gesture(UiObject obj, Point startPoint1, Point startPoint2, Point endPoint1, Point endPoint2, int steps) throws UiObjectNotFoundException, NotImplementedException {
         return obj.performTwoPointerGesture(startPoint1.toPoint(), startPoint2.toPoint(), endPoint1.toPoint(), endPoint2.toPoint(), steps);
     }
+
+    //FOR 3
+    @Override
+    public boolean gesture(Selector obj, Point startPoint1, Point startPoint2, Point startPoint3, Point endPoint1, Point endPoint2, Point endPoint3, int steps) throws UiObjectNotFoundException, NotImplementedException {
+        return gesture(device.findObject(obj.toUiSelector()), startPoint1, startPoint2, startPoint3, endPoint1, endPoint2, endPoint3, steps);
+    }
+    //TODO other way to inject multi pointers
+    private boolean gesture(UiObject obj, Point startPoint1, Point startPoint2, Point startPoint3, Point endPoint1, Point endPoint2,  Point endPoint3, int steps) throws UiObjectNotFoundException, NotImplementedException {
+        //PointerCoords[] pcs = new PointerCoords[3];
+        PointerCoords[] points1 = new PointerCoords[steps+2];
+        PointerCoords[] points2 = new PointerCoords[steps+2];
+        PointerCoords[] points3 = new PointerCoords[steps+2];
+        float eventX1 = startPoint1.getX();
+        float eventY1 = startPoint1.getY();
+        float eventX2 = startPoint2.getX();
+        float eventY2 = startPoint2.getY();
+        float eventX3 = startPoint3.getX();
+        float eventY3 = startPoint3.getY();
+        float offY1 = (endPoint1.getY() - eventY1)/steps;
+        float offY2 = (endPoint2.getY() - eventY2)/steps;
+        float offY3 = (endPoint3.getY() - eventY3)/steps;
+        float offX1 = (endPoint1.getX() - eventX1)/steps;
+        float offX2 = (endPoint2.getX() - eventX2)/steps;
+        float offX3 = (endPoint3.getX() - eventX3)/steps;
+
+        for (int i = 0; i < steps + 1; i++) {
+            PointerCoords p1 = new PointerCoords();
+            p1.x = eventX1;
+            p1.y = eventY1;
+            p1.pressure = 1;
+            p1.size = 2;
+            points1[i] = p1;
+            PointerCoords p2 = new PointerCoords();
+            p2.x = eventX2;
+            p2.y = eventY2;
+            p2.pressure = 1;
+            p2.size = 2;
+            points2[i] = p2;
+            PointerCoords p3 = new PointerCoords();
+            p3.x = eventX3;
+            p3.y = eventY3;
+            p3.pressure = 1;
+            p3.size = 2;
+            points3[i] = p3;
+            eventX1 += offX1;
+            eventY1 += offY1;
+            eventX2 += offX2;
+            eventY2 += offY2;
+            eventX3 += offX3;
+            eventY3 += offY3;
+        }
+
+        // ending pointers coordinates
+        PointerCoords p1 = new PointerCoords();
+        p1.x = endPoint1.getX();
+        p1.y = endPoint1.getY();
+        p1.pressure = 1;
+        p1.size = 2;
+        points1[steps + 1] = p1;
+        PointerCoords p2 = new PointerCoords();
+        p2.x = endPoint2.getX();
+        p2.y = endPoint2.getY();
+        p2.pressure = 1;
+        p2.size = 2;
+        points2[steps + 1] = p2;
+        PointerCoords p3 = new PointerCoords();
+        p3.x = endPoint3.getX();
+        p3.y = endPoint3.getY();
+        p3.pressure = 1;
+        p3.size = 2;
+        points3[steps + 1] = p3;
+        return obj.performMultiPointerGesture(points1, points2, points3);
+
+    }
+
 
     /**
      * Performs a two-pointer gesture, where each pointer moves diagonally toward the other, from the edges to the center of this UiObject .
@@ -1579,6 +1684,25 @@ public class AutomatorServiceImpl implements AutomatorService {
     }
 
     /**
+     * Generates a 3-pointer gesture with arbitrary starting and ending points.
+     *
+     * @param obj         the id of target ui object. ??
+     * @param startPoint1 start point of pointer 1
+     * @param startPoint2 start point of pointer 2
+     * @param startPoint3 start point of pointer 3
+     * @param endPoint1   end point of pointer 1
+     * @param endPoint2   end point of pointer 2
+     * @param endPoint3   end point of pointer 3
+     * @param steps       the number of steps for the gesture. Steps are injected about 5 milliseconds apart, so 100 steps may take around 0.5 seconds to complete.
+     * @return true if all touch events for this gesture are injected successfully, false otherwise
+     * @throws UiObjectNotFoundException
+     */
+    public boolean gesture(String obj, Point startPoint1, Point startPoint2,  Point startPoint3, Point endPoint1, Point endPoint2, Point endPoint3, int steps) throws UiObjectNotFoundException, NotImplementedException {
+        return gesture(getUiObject(obj), startPoint1, startPoint2, startPoint3, endPoint1, endPoint2, endPoint3, steps);
+    }
+
+
+    /**
      * Performs a two-pointer gesture, where each pointer moves diagonally toward the other, from the edges to the center of this UiObject .
      *
      * @param obj     the id of target ui object.
@@ -1621,6 +1745,7 @@ public class AutomatorServiceImpl implements AutomatorService {
     public boolean swipe(String obj, String dir, int steps) throws UiObjectNotFoundException {
         return swipe(getUiObject(obj), dir, steps);
     }
+
 
     /**
      * Waits a specified length of time for a view to become visible. This method waits until the view becomes visible on the display, or until the timeout has elapsed. You can use this method in situations where the content that you want to select is not immediately displayed.
@@ -1679,6 +1804,32 @@ public class AutomatorServiceImpl implements AutomatorService {
         final ClipData clip = clipboard.getPrimaryClip();
         if (clip != null && clip.getItemCount() > 0 && clipboard.getPrimaryClip().getItemAt(0).getText() != null) {
             return clipboard.getPrimaryClip().getItemAt(0).getText().toString();
+        }
+        return null;
+    }
+
+    @Override
+    public List<ObjInfo> finds(Selector obj) throws NotImplementedException {
+        List<ObjInfo> objs = new ArrayList<>();
+        List<UiObject2> obj2s = device.findObjects(obj.toBySelector());
+        for(int i=0;i<obj2s.size();i++){
+            objs.add(ObjInfo.getObjInfo(obj2s.get(i)));
+        }
+        return objs;
+    }
+
+    @Override
+    public String toast(String switchStatus) throws NotImplementedException {
+        if("on".equalsIgnoreCase(switchStatus)){
+            NotificationListener.getInstance().start();
+        }else if("off".equalsIgnoreCase(switchStatus)){
+            NotificationListener.getInstance().stop();
+            List<CharSequence> toastMsg = NotificationListener.getInstance().getToastMSGs();
+            StringBuilder sb = new StringBuilder();
+            for(CharSequence tmp:toastMsg){
+                sb.append(tmp.toString());
+            }
+            return sb.toString();
         }
         return null;
     }
