@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ATXBOT</string>
+    <string name="hello_world">欢迎！</string>
+    <string name="action_settings">设置</string>
+    <string name="monitor_service_ticker">UIAutomator服务已启动</string>
+    <string name="monitor_service_title">UIAutomator</string>
+    <string name="monitor_service_text">IP地址</string>
+    <string name="agent_die">ATXBOT已停止</string>
+    <string name="agent_live">ATXBOT已启动</string>
+    <string name="fast_input_label">FastInput输入法</string>
+    <string name="stop_atxagent">停止ATXBOT</string>
+    <string name="start_atxagent">启动ATXBOT</string>
+    <string name="stop_uiautomator">停止UIAutomator</string>
+    <string name="start_uiautomator">启动UIAutomator</string>
+    <string name="barrier_free">无障碍服务</string>
+    <string name="develop_mode">开发者选项</string>
+    <string name="shot_cut">快捷方式</string>
+    <string name="identify">识别本机</string>
+    <string name="quit">关闭所有服务</string>
+    <string name="no_permission_tip">没有权限写入SD CARD</string>
+    <string name="atx_agent">ATXBOT</string>
+    <string name="avaible_internal_storage">内部存储:</string>
+    <string name="avaible_sd_storage">SD卡:</string>
+    <string name="local_ip_address">本机IP地址:</string>
+    <string name="server_response">服务响应信息</string>
+    <string name="refresh_status">刷新服务状态</string>
+    <string name="test_uiautomator">测试UIAutomator</string>
+</resources>

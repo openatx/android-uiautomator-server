@@ -22,27 +22,30 @@
   -->
 
 <resources>
-    <string name="app_name">ATX</string>
-
+    <string name="app_name">ATXBOT</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">SETTINGS</string>
     <string name="monitor_service_ticker">UIAutomator service started</string>
     <string name="monitor_service_title">UIAutomator</string>
     <string name="monitor_service_text">IP</string>
-    <string name="agent_die">:agent is die</string>
-    <string name="agent_live">:agent is live</string>
+    <string name="agent_die">:ATXBOT is die</string>
+    <string name="agent_live">:ATXBOT is live</string>
     <string name="fast_input_label">FastInputIME</string>
-    <string name="stop_atxagent">停止ATXAGENT</string>
-    <string name="start_atxagent">启动ATXAGENT</string>
-    <string name="stop_uiautomator">停止UIAutomator</string>
-    <string name="start_uiautomator">启动UIAutomator</string>
-    <string name="barrier_free">无障碍服务</string>
-    <string name="develop_mode">开发者选项</string>
-    <string name="shot_cut">快捷方式</string>
-    <string name="identify">识别本机</string>
-    <string name="quit">关闭所有服务</string>
+    <string name="stop_atxagent">STOP ATXBOT</string>
+    <string name="start_atxagent">START ATXBOT</string>
+    <string name="stop_uiautomator">STOP UIAutomator</string>
+    <string name="start_uiautomator">START UIAutomator</string>
+    <string name="barrier_free">Accessible Services</string>
+    <string name="develop_mode">Developer Options</string>
+    <string name="shot_cut">Shortcuts</string>
+    <string name="identify">Identify</string>
+    <string name="quit">STOP ALL SERVICES</string>
     <string name="no_permission_tip">No permission to write sd card</string>
-    <string name="atx_agent">ATX-Agent</string>
-    <string name="avaible_internal_storage">内部存储:</string>
-    <string name="avaible_sd_storage">SD卡:</string>
+    <string name="atx_agent">ATXBOT</string>
+    <string name="avaible_internal_storage">INNER STORAGE:</string>
+    <string name="avaible_sd_storage">SD CARD:</string>
+    <string name="local_ip_address">LOCAL IPADDRESS:</string>
+    <string name="server_response">SERVER RESPONESE</string>
+    <string name="refresh_status">REFRESH  STATUS</string>
+    <string name="test_uiautomator">TEST UIAutomator</string>
 </resources>

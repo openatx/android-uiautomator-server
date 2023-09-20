@@ -31,7 +31,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.Until;
@@ -41,9 +40,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.googlecode.jsonrpc4j.ErrorResolver;
 import com.googlecode.jsonrpc4j.JsonRpcServer;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 
 import java.io.PrintWriter;
@@ -67,7 +66,7 @@ public class Stub {
     int PORT = 9008;
     AutomatorHttpServer server = new AutomatorHttpServer(PORT);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         launchService();
         JsonRpcServer jrs = new JsonRpcServer(new ObjectMapper(), new AutomatorServiceImpl(), AutomatorService.class);
@@ -125,7 +124,7 @@ public class Stub {
         context.startService(intent);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         server.stop();
         Context context = InstrumentationRegistry.getContext();
