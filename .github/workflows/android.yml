@@ -23,11 +23,11 @@ jobs:
         distribution: 'oracle'
         cache: gradle
 
-    - name: Print generated version
-      run: gradle androidGitVersion
-
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
+    - name: Print generated version
+      run: ./gradlew --quiet androidGitVersion
 
     - name: Build with Gradle
       run: ./gradlew build

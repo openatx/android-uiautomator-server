@@ -46,7 +46,7 @@ android {
 
     defaultConfig {
         applicationId "com.github.uiautomator"
-        minSdkVersion 18
+        minSdkVersion 19
         targetSdkVersion 32
         versionCode androidGitVersion.code()
         versionName androidGitVersion.name()
