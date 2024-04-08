@@ -14,10 +14,10 @@ jobs:
     # ref: https://github.com/marketplace/actions/automated-build-android-app-with-github-action
     steps:
     - uses: actions/checkout@v3
-    - name: set up JDK 11
+    - name: set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'oracle'
         cache: gradle
 
