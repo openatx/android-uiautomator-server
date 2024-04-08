@@ -57,7 +57,7 @@ import java.util.List;
  * @author xiaocong@gmail.com
  */
 @RunWith(AndroidJUnit4.class)
-@SdkSuppress(minSdkVersion = 18)
+@SdkSuppress(minSdkVersion = 19)
 public class Stub {
     private final String TAG = "UIAUTOMATOR";
     private static final int LAUNCH_TIMEOUT = 5000;
