@@ -34,7 +34,7 @@ plugins {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     // version code history
     // 1: original version
@@ -109,6 +109,9 @@ dependencies {
     androidTestImplementation 'androidx.annotation:annotation:1.1.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.3.0'
     androidTestImplementation 'com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.0'
+    androidTestImplementation 'com.fasterxml.jackson.core:jackson-core:2.5.3'
+    androidTestImplementation 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
+    androidTestImplementation 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
 
     implementation project(':permission')
 }

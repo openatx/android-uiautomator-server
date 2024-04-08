@@ -105,9 +105,13 @@ public class VivoUtils {
         if (cursor != null) {
             cursor.getColumnNames();
             if (cursor.moveToFirst()) {
-                int currentmode = cursor.getInt(cursor.getColumnIndex("currentlmode"));
+                int columnIndex = cursor.getColumnIndex("currentlmode");
+                int currentMode = 0;
+                if (columnIndex != -1) {
+                    currentMode = cursor.getInt(columnIndex);
+                }
                 cursor.close();
-                return currentmode;
+                return currentMode;
             } else {
                 cursor.close();
                 return getFloatPermissionStatus2(context);
@@ -134,7 +138,11 @@ public class VivoUtils {
                 .query(uri2, null, selection, selectionArgs, null);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                int currentmode = cursor.getInt(cursor.getColumnIndex("currentmode"));
+                int columnIndex = cursor.getColumnIndex("currentmode");
+                int currentmode = 0;
+                if (columnIndex != -1) {
+                    cursor.getInt(columnIndex);
+                }
                 cursor.close();
                 return currentmode;
             } else {
