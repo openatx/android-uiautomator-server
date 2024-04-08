@@ -40,6 +40,9 @@ android {
     // 1: original version
     // 2: update all dependencies to latest
     // 6: input method, battery,rotation monitor
+    androidGitVersion {
+        baseCode 1
+    }
 
     defaultConfig {
         applicationId "com.github.uiautomator"

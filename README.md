@@ -171,3 +171,4 @@ Clipboard, Thanks to @fplust
 - https://github.com/willerce/WhatsInput
 - https://github.com/senzhk/ADBKeyBoard
 - https://github.com/amotzte/android-mock-location-for-development
+- https://github.com/gladed/gradle-android-git-version
