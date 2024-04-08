@@ -17,8 +17,8 @@ jobs:
     - name: set up JDK 11
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
-        distribution: 'zulu'
+        java-version: '11'
+        distribution: 'oracle'
         cache: gradle
 
     - name: Grant execute permission for gradlew
