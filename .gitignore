@@ -7,3 +7,5 @@ captures
 app/app.iml
 android-uiautomator-server.iml
 *.iml
+.settings/
+.project
