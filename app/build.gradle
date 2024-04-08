@@ -28,7 +28,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.gladed.androidgitversion' version '0.4.3'
+    id 'com.gladed.androidgitversion' version '0.4.14'
 }
 
 apply plugin: 'com.android.application'
