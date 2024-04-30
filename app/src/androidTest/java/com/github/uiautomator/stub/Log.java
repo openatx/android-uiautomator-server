@@ -30,7 +30,7 @@ public class Log {
         android.util.Log.d(TAG, msg);
     }
 
-    public static void i(String msg, String s) {
+    public static void i(String msg) {
         android.util.Log.i(TAG, msg);
     }
 

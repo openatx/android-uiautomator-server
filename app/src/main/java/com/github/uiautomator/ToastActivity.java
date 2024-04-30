@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.permission.FloatWindowManager;
+
 public class ToastActivity extends Activity {
     final static String TAG = "ToastActivity";
     private static FloatView floatView;
@@ -26,6 +28,12 @@ public class ToastActivity extends Activity {
 
         String showFloat = intent.getStringExtra("showFloatWindow");
         Log.i(TAG, "showFloat: " + showFloat);
+
+        boolean floatEnabled = FloatWindowManager.getInstance().checkFloatPermission(ToastActivity.this);
+        if (!floatEnabled) {
+            Log.w(TAG, "floatPermission is not enabled");
+            return;
+        }
         if ("true".equals(showFloat)) {
             getFloatView().show();
         } else if ("false".equals(showFloat)) {

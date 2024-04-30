@@ -31,7 +31,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.Until;
@@ -90,7 +89,7 @@ public class Stub {
     }
 
     private void launchPackage(String packageName) {
-        Log.i(TAG, "Launch " + packageName);
+        Log.i("Launch " + packageName);
         UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         Context context = InstrumentationRegistry.getContext();
         final Intent intent = context.getPackageManager()
@@ -111,7 +110,7 @@ public class Stub {
         String launcherPackage = device.getLauncherPackageName();
         Boolean ready = device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
         if (!ready) {
-            Log.i(TAG, "Wait for launcher timeout");
+            Log.i("Wait for launcher timeout");
             return;
         }
 
@@ -141,6 +140,7 @@ public class Stub {
     @Test
     @LargeTest
     public void testUIAutomatorStub() throws InterruptedException {
+        Log.i("server started");
         while (server.isAlive()) {
             Thread.sleep(100);
         }

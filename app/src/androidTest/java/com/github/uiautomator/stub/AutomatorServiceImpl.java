@@ -35,7 +35,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.SystemClock;
-import androidx.test.InstrumentationRegistry;
+
+import androidx.core.accessibilityservice.AccessibilityServiceInfoCompat;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.StaleObjectException;
@@ -83,16 +85,20 @@ public class AutomatorServiceImpl implements AutomatorService {
 
     public AutomatorServiceImpl() {
         mInstrumentation = InstrumentationRegistry.getInstrumentation();
-//        int flags = UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES;
-        // TODO add enhance web debug support
         uiAutomation = mInstrumentation.getUiAutomation();
+
+        // https://developer.android.com/reference/androidx/core/accessibilityservice/AccessibilityServiceInfoCompat#FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY()
+        // https://www.jianshu.com/p/a8ccd607e172
+        // improve accessibility support for "android.webkit.WebView"
+        uiAutomation.getServiceInfo().flags |= AccessibilityServiceInfoCompat.FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY;
+
         device = UiDevice.getInstance(mInstrumentation);
         touchController = new TouchController(mInstrumentation);
 
         handler.post(new Runnable() {
             @Override
             public void run() {
-                AutomatorServiceImpl.this.clipboard = (ClipboardManager) InstrumentationRegistry.getTargetContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                AutomatorServiceImpl.this.clipboard = (ClipboardManager) mInstrumentation.getTargetContext().getSystemService(Context.CLIPBOARD_SERVICE);
             }
         });
         // play music when loaded
@@ -169,7 +175,7 @@ public class AutomatorServiceImpl implements AutomatorService {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ToastHelper.makeText(InstrumentationRegistry.getTargetContext(), text, duration).show();
+                ToastHelper.makeText(mInstrumentation.getTargetContext(), text, duration).show();
             }
         });
         return true;
@@ -294,12 +300,16 @@ public class AutomatorServiceImpl implements AutomatorService {
      */
     @Override
     public String dumpWindowHierarchy(boolean compressed) {
-        device.setCompressedLayoutHeirarchy(compressed);
+        device.setCompressedLayoutHierarchy(compressed);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             // Original code: device.dumpWindowHierarchy(os);
-            // The bellow code fix xml encode error
-            AccessibilityNodeInfoDumper.dumpWindowHierarchy(device, os);
+            // The old code have xml encode error
+            // It seems the new androidx.uiautomator dump looks fine.
+            device.dumpWindowHierarchy(os);
+            // alternative
+            // sometimes java.lang.NullPointerException raises
+            //  AccessibilityNodeInfoDumper.dumpWindowHierarchy(device, os);
             return os.toString("UTF-8");
         } catch (IOException e) {
             Log.d("dumpWindowHierarchy got IOException: " + e);
@@ -325,7 +335,7 @@ public class AutomatorServiceImpl implements AutomatorService {
      */
     @Override
     public String takeScreenshot(String filename, float scale, int quality) throws NotImplementedException {
-        File f = new File(InstrumentationRegistry.getTargetContext().getFilesDir(), filename);
+        File f = new File(mInstrumentation.getTargetContext().getFilesDir(), filename);
         device.takeScreenshot(f, scale, quality);
         if (f.exists()) return f.getAbsolutePath();
         return null;
