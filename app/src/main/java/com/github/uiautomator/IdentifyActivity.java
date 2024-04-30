@@ -48,7 +48,7 @@ public class IdentifyActivity extends Activity {
         Log.i(TAG, "theme " + activityTheme);
         Float brightness = 0.1f;
         Integer backgroundColor = Color.BLACK;
-        if (activityTheme != null && "RED".equals(activityTheme)) {
+        if ("RED".equals(activityTheme)) {
             backgroundColor = Color.RED;
             brightness = 1.0f;
         }
@@ -73,12 +73,12 @@ public class IdentifyActivity extends Activity {
         layout.addView(createData(Build.VERSION.RELEASE + " (SDK " + Build.VERSION.SDK_INT + ")"));
         layout.addView(createLabel("OPERATOR"));
         layout.addView(createData(tm.getSimOperatorName()));
-        layout.addView(createLabel("PHONE"));
-        layout.addView(createData(tm.getLine1Number()));
-        layout.addView(createLabel("IMEI"));
-        layout.addView(createData(tm.getDeviceId()));
-        layout.addView(createLabel("ICCID"));
-        layout.addView(createData(tm.getSimSerialNumber()));
+//        layout.addView(createLabel("PHONE"));
+//        layout.addView(createData(tm.getLine1Number()));
+//        layout.addView(createLabel("IMEI"));
+//        layout.addView(createData(tm.getDeviceId()));
+//        layout.addView(createLabel("ICCID"));
+//        layout.addView(createData(tm.getSimSerialNumber()));
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         ensureVisibility(brightness);
@@ -119,8 +119,13 @@ public class IdentifyActivity extends Activity {
     private String getProperty(String name, String defaultValue) {
         try {
             Class<?> SystemProperties = Class.forName("android.os.SystemProperties");
-            Method get = SystemProperties.getMethod("get", String.class, String.class);
-            return (String) get.invoke(SystemProperties, name, defaultValue);
+            try {
+                Method get = SystemProperties.getMethod("get", String.class, String.class);
+                return (String) get.invoke(SystemProperties, name, defaultValue);
+            } catch (NoSuchMethodException e) {
+                Method get = SystemProperties.getMethod("get", String.class);
+                return (String) get.invoke(SystemProperties, name);
+            }
         } catch (ClassNotFoundException e) {
             Log.e(TAG, "Class.forName() failed", e);
             return defaultValue;

@@ -69,8 +69,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AutomatorServiceImpl implements AutomatorService {
 
-    private final HashSet<String> watchers = new HashSet<String>();
-    private final ConcurrentHashMap<String, UiObject> uiObjects = new ConcurrentHashMap<String, UiObject>();
+    private final HashSet<String> watchers = new HashSet<>();
+    private final ConcurrentHashMap<String, UiObject> uiObjects = new ConcurrentHashMap<>();
     private SoundPool soundPool = new SoundPool(100, AudioManager.STREAM_MUSIC, 0);
 
     Handler handler = new Handler(Looper.getMainLooper());
@@ -83,6 +83,8 @@ public class AutomatorServiceImpl implements AutomatorService {
 
     public AutomatorServiceImpl() {
         mInstrumentation = InstrumentationRegistry.getInstrumentation();
+//        int flags = UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES;
+        // TODO add enhance web debug support
         uiAutomation = mInstrumentation.getUiAutomation();
         device = UiDevice.getInstance(mInstrumentation);
         touchController = new TouchController(mInstrumentation);
@@ -119,7 +121,7 @@ public class AutomatorServiceImpl implements AutomatorService {
     /**
      * It's to play a section music to test
      *
-     * @return
+     * @return bool
      */
     @Override
     public boolean playSound(String path) {

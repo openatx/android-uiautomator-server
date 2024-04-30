@@ -81,11 +81,7 @@ public class Console {
             System.exit(1);
         }
 
-        MinitouchAgent minitouch = new MinitouchAgent(size.x, size.y, handler, "minitouchagent");
-        MinicapAgent minicap = new MinicapAgent(size.x, size.y, "minicapagent");
         RotationAgent rotation = new RotationAgent("rotationagent");
-        minitouch.start();
-        minicap.start();
         rotation.start();
 
         Looper.loop();
