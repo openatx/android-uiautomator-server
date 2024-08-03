@@ -130,6 +130,7 @@ class AccessibilityNodeInfoDumper {
         serializer.attribute("", "visible-to-user", Boolean.toString(node.isVisibleToUser()));
         serializer.attribute("", "bounds", AccessibilityNodeInfoHelper.getVisibleBoundsInScreen(
                 node, width, height, false).toShortString());
+        serializer.attribute("", "editable", Boolean.toString(node.isEditable()));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             serializer.attribute("", "drawing-order",
                     Integer.toString(Api24Impl.getDrawingOrder(node)));
