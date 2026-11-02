@@ -1,3 +1,6 @@
+# New repo: https://github.com/openatx/android-uiautomator-server-jar
+
+
 # Purpose
 [![Android CI](https://github.com/openatx/android-uiautomator-server/actions/workflows/android.yml/badge.svg)](https://github.com/openatx/android-uiautomator-server/actions/workflows/android.yml)
 
